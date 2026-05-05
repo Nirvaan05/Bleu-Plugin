@@ -1,0 +1,23 @@
+{
+  "name": "bleu",
+  "owner": {
+    "name": "Nirvaan Lagishetty"
+  },
+  "description": "Bleu — a planning skill for turning ideas into deeply structured, file-backed system blueprints.",
+  "plugins": [
+    {
+      "name": "bleu",
+      "source": "./plugins/bleu",
+      "description": "Turn an idea into a deeply structured, lint-passing, file-backed system plan before writing any code.",
+      "version": "1.0.0",
+      "license": "MIT",
+      "author": {
+        "name": "Nirvaan Lagishetty"
+      },
+      "homepage": "https://github.com/Nirvaan05/Bleu-plugin",
+      "repository": "https://github.com/Nirvaan05/Bleu-plugin",
+      "category": "planning",
+      "tags": ["planning", "architecture", "knowledge-base", "spec-driven", "system-design"]
+    }
+  ]
+}

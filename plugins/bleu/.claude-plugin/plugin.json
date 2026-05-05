@@ -1,0 +1,12 @@
+{
+  "name": "bleu",
+  "description": "Turn an idea into a deeply structured, lint-passing, file-backed system plan before writing any code.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": {
+    "name": "Nirvaan Lagishetty"
+  },
+  "homepage": "https://github.com/Nirvaan05/Bleu-plugin",
+  "repository": "https://github.com/Nirvaan05/Bleu-plugin",
+  "keywords": ["planning", "architecture", "spec-driven", "knowledge-base", "blueprint", "system-design"]
+}

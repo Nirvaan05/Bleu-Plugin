@@ -1,0 +1,17 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Claude Code state (NOT .claude-plugin/ — that's the plugin manifest, tracked)
+.claude/
+.claude.json
+
+# Bleu's own workspace if someone runs it inside this repo
+blueprint/
+
+# Logs
+*.log
