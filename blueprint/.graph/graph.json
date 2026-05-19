@@ -1,0 +1,817 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "index",
+      "type": "other",
+      "path": "index.md",
+      "metadata": {
+        "status": "active",
+        "hash": "b09a84851d542184d6bcb6ebf7d965561b86202b3e9aaaa84350884fd8b9c894",
+        "is_global": false
+      }
+    },
+    {
+      "id": "journal",
+      "type": "other",
+      "path": "journal.md",
+      "metadata": {
+        "status": "active",
+        "hash": "11f77fd689c325024298fe5b3b83062a7c3cbab916bdc36014e8df21782b7bc2",
+        "is_global": false
+      }
+    },
+    {
+      "id": "NEXT",
+      "type": "other",
+      "path": "NEXT.md",
+      "metadata": {
+        "status": "active",
+        "hash": "cf496ff10931a93188ec666584729bad7354b1cb71a1d29f4e6aaf962ff88c08",
+        "is_global": false
+      }
+    },
+    {
+      "id": "SESSION",
+      "type": "other",
+      "path": "SESSION.md",
+      "metadata": {
+        "status": "active",
+        "hash": "5302831297a719dede40083dbc5b29eb7bf272ab92e98cd530d433b02fc5d750",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-01",
+      "type": "ap",
+      "path": "action-points/AP-01-scaffold-scripts.md",
+      "metadata": {
+        "status": "active",
+        "hash": "6a566e74e5e638a91ee28abe8562372df42e7fe988ed53e05c955286034e8291",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-02",
+      "type": "ap",
+      "path": "action-points/AP-02-graph-engine-parser.md",
+      "metadata": {
+        "status": "active",
+        "hash": "906a8c46b38ae473be6cad9497a220c618fcda403783285360cee83a6b231fb0",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-03",
+      "type": "ap",
+      "path": "action-points/AP-03-dag-validator-core.md",
+      "metadata": {
+        "status": "active",
+        "hash": "f3e77f47f50bd1657df4b52ec81aa030983f667bbae237d24f087ddbb709784b",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-04",
+      "type": "ap",
+      "path": "action-points/AP-04-differential-linter-engine.md",
+      "metadata": {
+        "status": "active",
+        "hash": "0cdacad15489cd9f99e6c4ddf655c83179101f98638a73dfdd8b281bb3f4c9a1",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-05",
+      "type": "ap",
+      "path": "action-points/AP-05-sanitizer-regex-suite.md",
+      "metadata": {
+        "status": "active",
+        "hash": "66e37cdff282aa8fe90a296eb91ae8c37faf24ef81c700b00ec2288fb71117f2",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-06",
+      "type": "ap",
+      "path": "action-points/AP-06-circuit-breaker-logic.md",
+      "metadata": {
+        "status": "active",
+        "hash": "e1406c41084c33087c3a2752b747f43fd2294fc7fb8c68c79b8232cccead54f6",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-07",
+      "type": "ap",
+      "path": "action-points/AP-07-hook-integration-curator.md",
+      "metadata": {
+        "status": "active",
+        "hash": "a80d2fd727e5ebaab662e5888af1775f683c2beb9a4c82878fb149e900b85cee",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-08",
+      "type": "ap",
+      "path": "action-points/AP-08-hook-integration-linter.md",
+      "metadata": {
+        "status": "active",
+        "hash": "68cd43f9188a54e4d5c7fbb7663874895d37bd5666a988ec0cc97f67eb5ac9bb",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-09",
+      "type": "ap",
+      "path": "action-points/AP-09-recovery-adr-template.md",
+      "metadata": {
+        "status": "active",
+        "hash": "eaa6dac8d1fa2308a53cab8338cd7c320cd5e543eafa006784abbbf13e52e524",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-10",
+      "type": "ap",
+      "path": "action-points/AP-10-e2e-stabilization-test.md",
+      "metadata": {
+        "status": "active",
+        "hash": "3ede67ae88b6984543f7888b488b3beecda43d3c6862a475dad225b8157445c6",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-11",
+      "type": "ap",
+      "path": "action-points/AP-11-atomic-state-management.md",
+      "metadata": {
+        "status": "active",
+        "hash": "36fa201bd3e140b320a073386979b8009171b0171342e71d57ceeea38f95b2ae",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-12",
+      "type": "ap",
+      "path": "action-points/AP-12-deterministic-dag-sort.md",
+      "metadata": {
+        "status": "active",
+        "hash": "c829d7c562028f8fe5065cbb9dbed03ec561fd17ef5292df91ab8cc4c065bbad",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-13",
+      "type": "ap",
+      "path": "action-points/AP-13-ast-sanitizer-core.md",
+      "metadata": {
+        "status": "active",
+        "hash": "d4181a9b17ebaa247b2f7538df465470cf4008a97ec552a090a5eade0b076c01",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-14",
+      "type": "ap",
+      "path": "action-points/AP-14-journal-recovery-logic.md",
+      "metadata": {
+        "status": "active",
+        "hash": "0154aa894f9711b1b837a636a87bd316e4e8ce45368103f6a3eaf6959dd45927",
+        "is_global": false
+      }
+    },
+    {
+      "id": "AP-15",
+      "type": "ap",
+      "path": "action-points/AP-15-global-constraint-propagation.md",
+      "metadata": {
+        "status": "active",
+        "hash": "2cd0fd5345c0e57eb1089cb7ceb4e63d774ffc7dab78da5b3af1a935d3c33673",
+        "is_global": false
+      }
+    },
+    {
+      "id": "action-points/README",
+      "type": "other",
+      "path": "action-points/README.md",
+      "metadata": {
+        "status": "active",
+        "hash": "81d258d96a1292aa27cb2611767afcac9d2efa20e0ca597f753c7e0a2cb0ae5d",
+        "is_global": false
+      }
+    },
+    {
+      "id": "ADR-001",
+      "type": "adr",
+      "path": "decisions/ADR-001-kahn-algorithm-ap-validation.md",
+      "metadata": {
+        "status": "active",
+        "hash": "c734b30f75a237612ce56386265e1dba7138dd8abacb49ef44f94d3361acf9c0",
+        "is_global": false
+      }
+    },
+    {
+      "id": "ADR-002",
+      "type": "adr",
+      "path": "decisions/ADR-002-graph-aware-incremental-linting.md",
+      "metadata": {
+        "status": "active",
+        "hash": "b646d228ea472707b954a27006c0307998ba4b3c8165e10663c8973d772ee69c",
+        "is_global": false
+      }
+    },
+    {
+      "id": "ADR-003",
+      "type": "adr",
+      "path": "decisions/ADR-003-partial-isolation-circuit-breaker.md",
+      "metadata": {
+        "status": "active",
+        "hash": "3faafc03742d37d3f03411e0b58bcef22bb3da838091e7b11569d741f777eb5e",
+        "is_global": false
+      }
+    },
+    {
+      "id": "ADR-004",
+      "type": "adr",
+      "path": "decisions/ADR-004-regex-deterministic-sanitization.md",
+      "metadata": {
+        "status": "active",
+        "hash": "316ce4264ed1d5575386715ddb2a95422d6fde76f75a15f0c4a035f55d2b29c1",
+        "is_global": false
+      }
+    },
+    {
+      "id": "ADR-005",
+      "type": "adr",
+      "path": "decisions/ADR-005-atomic-state-management.md",
+      "metadata": {
+        "status": "active",
+        "hash": "90d8aec0cc391a661acbd0281d072cd6f1ccb6f7259d0c09c923a643dc2ccf7d",
+        "is_global": false
+      }
+    },
+    {
+      "id": "ADR-006",
+      "type": "adr",
+      "path": "decisions/ADR-006-deterministic-dag-sort.md",
+      "metadata": {
+        "status": "active",
+        "hash": "2b0504614919f92bf63295a35cfb5bdfe45f6dc5817a9836adc96c96d0691bda",
+        "is_global": false
+      }
+    },
+    {
+      "id": "ADR-007",
+      "type": "adr",
+      "path": "decisions/ADR-007-journal-recovery-flow.md",
+      "metadata": {
+        "status": "active",
+        "hash": "58446858de3f2e3f587a178dfa1616c1158a998d8c4ddd0a2b994c3a5df60f14",
+        "is_global": false
+      }
+    },
+    {
+      "id": "ADR-008",
+      "type": "adr",
+      "path": "decisions/ADR-008-implicit-dependency-propagation.md",
+      "metadata": {
+        "status": "active",
+        "hash": "92da21b181a7d778b87499a7b1dcb04deb6a3511288f6a1d31e72d63bacd5626",
+        "is_global": false
+      }
+    },
+    {
+      "id": "decisions/README",
+      "type": "other",
+      "path": "decisions/README.md",
+      "metadata": {
+        "status": "active",
+        "hash": "3bc4b0cf9a09a34e397e157b782fa5f4614c6c39b7279286b9e4a7c3a5e7042d",
+        "is_global": false
+      }
+    },
+    {
+      "id": "decisions/templates/resolution-adr",
+      "type": "adr",
+      "path": "decisions/templates/resolution-adr.md",
+      "metadata": {
+        "status": "active",
+        "hash": "1aa0d470e4a56a509db26cad79908c09c3114477c0c981973e38d5b6b1e851a4",
+        "is_global": false
+      }
+    },
+    {
+      "id": "handoff/ap-list",
+      "type": "other",
+      "path": "handoff/ap-list.md",
+      "metadata": {
+        "status": "active",
+        "hash": "0129137ae55c4af23fb9089a90d1ad52313974b9082730989275f949cb245ae9",
+        "is_global": false
+      }
+    },
+    {
+      "id": "handoff/claude-code",
+      "type": "other",
+      "path": "handoff/claude-code.md",
+      "metadata": {
+        "status": "active",
+        "hash": "6bcaaacbfc75dfb2f1f7eb28aa661358d1085dc72a79b3a9703edfe03e039096",
+        "is_global": false
+      }
+    },
+    {
+      "id": "handoff/gsd",
+      "type": "other",
+      "path": "handoff/gsd.md",
+      "metadata": {
+        "status": "active",
+        "hash": "b419faf39112788adce1dd06e2571df74197c88638e42d67071419d49647d5a2",
+        "is_global": false
+      }
+    },
+    {
+      "id": "handoff/superpowers",
+      "type": "other",
+      "path": "handoff/superpowers.md",
+      "metadata": {
+        "status": "active",
+        "hash": "bb5ec1894a753a6340eb9d755973a6abca7b4d708da429fd00ae1cd2089d755a",
+        "is_global": false
+      }
+    },
+    {
+      "id": "plan/00-vision",
+      "type": "component",
+      "path": "plan/00-vision.md",
+      "metadata": {
+        "status": "active",
+        "hash": "620f01190a69f1c1419cdbd5b1778e7fbd7fd53a939f03ec7c85cf0cec630499",
+        "is_global": true
+      }
+    },
+    {
+      "id": "plan/01-architecture",
+      "type": "component",
+      "path": "plan/01-architecture.md",
+      "metadata": {
+        "status": "active",
+        "hash": "e846b2c339a8919a8863f3eaa7e6986e8820188319745e0b3a4504d27a8d80d8",
+        "is_global": true
+      }
+    },
+    {
+      "id": "plan/02-pipelines",
+      "type": "component",
+      "path": "plan/02-pipelines.md",
+      "metadata": {
+        "status": "active",
+        "hash": "2383acdc6de9a9ec6bbb69eefca1b5c2ef7aafc9a8b4ce99e59ad04d73d9b685",
+        "is_global": false
+      }
+    },
+    {
+      "id": "plan/04-data-model",
+      "type": "component",
+      "path": "plan/04-data-model.md",
+      "metadata": {
+        "status": "active",
+        "hash": "81c7e0d7dd7cb9b2f750d73d68488bb5c7a1579e0a3fe2ff3a145c87d1a73209",
+        "is_global": true
+      }
+    },
+    {
+      "id": "plan/05-integrations",
+      "type": "component",
+      "path": "plan/05-integrations.md",
+      "metadata": {
+        "status": "active",
+        "hash": "aa1cdd800b1391171bbcd7fa46bf2307ac0c69a452b88b7e116af6f63c2de2f7",
+        "is_global": false
+      }
+    },
+    {
+      "id": "plan/06-non-functional",
+      "type": "component",
+      "path": "plan/06-non-functional.md",
+      "metadata": {
+        "status": "active",
+        "hash": "00443bce84a2d79e73e87388b39941efd7728583fb1882fc02e7eeef40e7d0be",
+        "is_global": true
+      }
+    },
+    {
+      "id": "plan/07-risks-open-questions",
+      "type": "component",
+      "path": "plan/07-risks-open-questions.md",
+      "metadata": {
+        "status": "active",
+        "hash": "ceca492edf5a5419d521aaba3426a260bebf6c857c082b6f49e36088dd8869a2",
+        "is_global": false
+      }
+    },
+    {
+      "id": "plan/03-components/circuit-breaker",
+      "type": "component",
+      "path": "plan/03-components/circuit-breaker.md",
+      "metadata": {
+        "status": "active",
+        "hash": "d40fab75aab60c214db3bf4d4e4b6a988ee7f3948055c54f9bc62a94b84ad9f9",
+        "is_global": false
+      }
+    },
+    {
+      "id": "plan/03-components/dag-validator",
+      "type": "component",
+      "path": "plan/03-components/dag-validator.md",
+      "metadata": {
+        "status": "active",
+        "hash": "dfdd3777dfc9fe9698665795d2ddd3db8f44fc9d99e21ae92f475ee9c9f289c2",
+        "is_global": false
+      }
+    },
+    {
+      "id": "plan/03-components/diff-linter",
+      "type": "component",
+      "path": "plan/03-components/diff-linter.md",
+      "metadata": {
+        "status": "active",
+        "hash": "a2081bc9ece250ac93f72ff5f4f70a4ba3ac59cd17e195b7b2468a2af986efef",
+        "is_global": false
+      }
+    },
+    {
+      "id": "plan/03-components/graph-engine",
+      "type": "component",
+      "path": "plan/03-components/graph-engine.md",
+      "metadata": {
+        "status": "active",
+        "hash": "9c7ca34428f5ad05e4f00477eaf3700f6436ae4d15ab52fe73ea06dac65461ef",
+        "is_global": false
+      }
+    },
+    {
+      "id": "plan/03-components/recovery-engine",
+      "type": "component",
+      "path": "plan/03-components/recovery-engine.md",
+      "metadata": {
+        "status": "active",
+        "hash": "4b067be41cb058453b26406cad2d3f5398c9e6cf433e81be79b00f2547854d62",
+        "is_global": false
+      }
+    },
+    {
+      "id": "plan/03-components/sanitizer",
+      "type": "component",
+      "path": "plan/03-components/sanitizer.md",
+      "metadata": {
+        "status": "active",
+        "hash": "05c40fed87d3973690e3c1521f0e764e92c0efa9efd110272a5db6450497844b",
+        "is_global": false
+      }
+    },
+    {
+      "id": "raw/hostile",
+      "type": "other",
+      "path": "raw/hostile.md",
+      "metadata": {
+        "status": "active",
+        "hash": "2456ddeaece5268fa6f217f5db57fb1c2f6b22a44ec599c07a3ec42d7a2b6059",
+        "is_global": false
+      }
+    },
+    {
+      "id": "raw/intake",
+      "type": "other",
+      "path": "raw/intake.md",
+      "metadata": {
+        "status": "active",
+        "hash": "61db8c5708fa1acfb7c002e1af7f447f73771a4a1a446d3ba5ba0c141a0533a1",
+        "is_global": false
+      }
+    },
+    {
+      "id": "research/agent-circuit-breakers",
+      "type": "other",
+      "path": "research/agent-circuit-breakers.md",
+      "metadata": {
+        "status": "active",
+        "hash": "496611cc9b063294e4a995f322e44b0cc778243c45634d5072e1cddf1b2fb1c5",
+        "is_global": false
+      }
+    },
+    {
+      "id": "research/dag-validation",
+      "type": "other",
+      "path": "research/dag-validation.md",
+      "metadata": {
+        "status": "active",
+        "hash": "c508537cdcb42f2839b23821ebd5d2084dae43b26d8b2c079f85d040f95a3e17",
+        "is_global": false
+      }
+    },
+    {
+      "id": "research/deterministic-sanitization",
+      "type": "other",
+      "path": "research/deterministic-sanitization.md",
+      "metadata": {
+        "status": "active",
+        "hash": "c8b2efd4b482909cda1af469a5c514cc9f01957f4388bdaab4d5fefcc492b189",
+        "is_global": false
+      }
+    },
+    {
+      "id": "research/differential-linting",
+      "type": "other",
+      "path": "research/differential-linting.md",
+      "metadata": {
+        "status": "active",
+        "hash": "4b71820ec79cfc75efe9b7a27e2877f2797117f7f70caf0bf5d0dc261c637be0",
+        "is_global": false
+      }
+    },
+    {
+      "id": "research/implicit-dependencies",
+      "type": "other",
+      "path": "research/implicit-dependencies.md",
+      "metadata": {
+        "status": "active",
+        "hash": "dab679483a217ee46f26ef7e6ec86fd17cc8d38617ca6df2435735f11041a2fe",
+        "is_global": false
+      }
+    },
+    {
+      "id": "research/journal-recovery",
+      "type": "other",
+      "path": "research/journal-recovery.md",
+      "metadata": {
+        "status": "active",
+        "hash": "794ec48d8e3692280a0765cc704a9f036da6dec882d486515f7b1768057f7f06",
+        "is_global": false
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "AP-02",
+      "to": "AP-01",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-03",
+      "to": "AP-02",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-04",
+      "to": "AP-02",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-05",
+      "to": "AP-01",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-06",
+      "to": "AP-01",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-07",
+      "to": "AP-02",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-07",
+      "to": "AP-05",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-08",
+      "to": "AP-04",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-08",
+      "to": "AP-06",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-09",
+      "to": "AP-06",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-10",
+      "to": "AP-07",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-10",
+      "to": "AP-08",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-10",
+      "to": "AP-09",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-10",
+      "to": "AP-12",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-10",
+      "to": "AP-14",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-11",
+      "to": "AP-01",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-12",
+      "to": "AP-03",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-13",
+      "to": "AP-05",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-14",
+      "to": "AP-11",
+      "type": "depends_on"
+    },
+    {
+      "from": "AP-15",
+      "to": "AP-02",
+      "type": "depends_on"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "plan/01-architecture",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "decisions/README",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-01-scaffold-scripts",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-11-atomic-state-management",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-05-sanitizer-regex-suite",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-13-ast-sanitizer-core",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-06-circuit-breaker-logic",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-02-graph-engine-parser",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-15-global-constraint-propagation",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-03-dag-validator-core",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-12-deterministic-dag-sort",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-04-differential-linter-engine",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-14-journal-recovery-logic",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-07-hook-integration-curator",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-08-hook-integration-linter",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-09-recovery-adr-template",
+      "type": "references"
+    },
+    {
+      "from": "handoff/gsd",
+      "to": "action-points/AP-10-e2e-stabilization-test",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-01-scaffold-scripts",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-11-atomic-state-management",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-05-sanitizer-regex-suite",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-13-ast-sanitizer-core",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-06-circuit-breaker-logic",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-02-graph-engine-parser",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-03-dag-validator-core",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-12-deterministic-dag-sort",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-04-differential-linter-engine",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-15-global-constraint-propagation",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-14-journal-recovery-logic",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-07-hook-integration-curator",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-08-hook-integration-linter",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-09-recovery-adr-template",
+      "type": "references"
+    },
+    {
+      "from": "handoff/superpowers",
+      "to": "action-points/AP-10-e2e-stabilization-test",
+      "type": "references"
+    }
+  ]
+}

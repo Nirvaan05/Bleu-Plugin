@@ -1,0 +1,14 @@
+{
+  "proposals": {
+    "test-node": {
+      "rejection_count": 2,
+      "last_verdict": "REJECT",
+      "timestamp": "2026-05-18T17:45:44.703782"
+    },
+    "root-node": {
+      "rejection_count": 2,
+      "last_verdict": "REJECT",
+      "timestamp": "2026-05-18T17:45:53.825863"
+    }
+  }
+}
