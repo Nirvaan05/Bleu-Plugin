@@ -1,0 +1,25 @@
+{
+  "patterns": [
+    {
+      "id": "S-01",
+      "name": "Shell Directive",
+      "regex": "(rm -rf|curl.*\\|.*bash|sudo |ssh |nc -e|/bin/sh|/bin/bash)",
+      "action": "STRIP",
+      "message": "Removed potential executable directive."
+    },
+    {
+      "id": "S-02",
+      "name": "Instruction Override",
+      "regex": "(?i)(ignore previous instructions|new system role|you are now a|you are no longer|discard all previous|system override)",
+      "action": "BLOCK_AND_TAG",
+      "message": "Detected potential prompt injection."
+    },
+    {
+      "id": "S-03",
+      "name": "Malicious Script",
+      "regex": "<script.*?>.*?</script>",
+      "action": "STRIP",
+      "message": "Removed malicious script tag."
+    }
+  ]
+}
