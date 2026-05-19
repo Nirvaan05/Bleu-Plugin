@@ -1,6 +1,6 @@
 # Knowledge Base Pattern (markdown wiki for planning)
 
-This skill organizes the plan as a markdown wiki on disk rather than as a single document or a chat transcript. The pattern treats an LLM as a "research librarian" that compiles raw inputs into structured, interlinked `.md` articles, maintains an index, and runs lint passes to fix inconsistencies and fill gaps — instead of relying on RAG (chunking + vector search).
+This skill organizes the plan as a markdown wiki on disk rather than as a single document or a chat transcript. The pattern treats an LLM as a "research librarian" that compiles raw inputs into structured, interlinked `.md` articles, maintains an index, and runs lint passes to fix inconsistencies and fill gaps - instead of relying on RAG (chunking + vector search).
 
 ## The pattern
 
@@ -9,7 +9,7 @@ The LLM reads raw materials from a `raw/` directory, compiles them into structur
 Key properties:
 
 - **Files outlast apps and sessions.** Markdown is portable, human-readable, and survives context-window resets.
-- **The LLM writes; the human steers.** The user rarely edits articles directly — they refine the *schema* (what articles should look like, what sections they must contain, what cross-references must exist) and the LLM executes at scale.
+- **The LLM writes; the human steers.** The user rarely edits articles directly - they refine the *schema* (what articles should look like, what sections they must contain, what cross-references must exist) and the LLM executes at scale.
 - **Three operational stages**: ingest raw materials → compile into structured wiki → actively maintain (lint, link, heal).
 - **Index files do the work RAG does**, without the chunking loss. The LLM reads a compact index of all articles, then loads the full articles it needs.
 - **Every claim is traceable** to a specific file a human can open, edit, or delete. No black-box embeddings.
@@ -22,7 +22,7 @@ The mapping from the pattern to this skill:
 
 | Knowledge base pattern | This skill's blueprint |
 |---|---|
-| `raw/` directory of source materials | `blueprint/raw/` — user transcript, codebase notes, research dumps |
+| `raw/` directory of source materials | `blueprint/raw/` - user transcript, codebase notes, research dumps |
 | Compiled wiki articles | `blueprint/plan/` and `blueprint/action-points/` |
 | Index file with summaries | `blueprint/index.md` |
 | Lint passes for consistency and gaps | Phase 6 + mini-lint after every phase |
@@ -33,11 +33,11 @@ The mapping from the pattern to this skill:
 
 The techniques below are pulled from working Claude Code plugins and production implementations of markdown-wiki patterns. See `references/landscape-research.md` for implementation details.
 
-### The `outputs/` directory — every query becomes an artifact
+### The `outputs/` directory - every query becomes an artifact
 
 The canonical layout has **three** top-level directories, not two: `raw/` (immutable sources), `wiki/` (LLM-compiled, LLM-maintained), and **`outputs/` (query responses, synthesized reports, analysis results the user asked for)**. A workspace without the third directory loses every query into the conversation history.
 
-For the bleu workspace, `blueprint/outputs/` is where the user's queries become persistent artifacts. The Curator never writes here. The user does — every time they ask "explain the auth pipeline to my team", "give me a one-page summary of the architecture decisions", "produce a slide deck of the rollout plan", that response gets saved as a markdown file (or a Marp slide deck, or a Mermaid diagram) in `outputs/`.
+For the bleu workspace, `blueprint/outputs/` is where the user's queries become persistent artifacts. The Curator never writes here. The user does - every time they ask "explain the auth pipeline to my team", "give me a one-page summary of the architecture decisions", "produce a slide deck of the rollout plan", that response gets saved as a markdown file (or a Marp slide deck, or a Mermaid diagram) in `outputs/`.
 
 The win: every query has a persistent, auditable record. Three weeks later when someone asks "what was the explanation we sent the platform team about retries?" the answer is in `outputs/`, not lost in a chat history.
 
@@ -61,17 +61,17 @@ Limits are configured per endpoint. See raw notes for current values:
 @blueprint/raw/research/rate-limit-design.md
 
 ## Error handling [coverage: low]
-Partial — needs more sources. See @blueprint/raw/codebase-notes.md and
+Partial - needs more sources. See @blueprint/raw/codebase-notes.md and
 the open question in @blueprint/plan/07-risks-open-questions.md.
 ```
 
 The tags map cleanly to behavior:
 
-- **`[coverage: high]`** — trust this section, skip the raw files. Production-ready content.
-- **`[coverage: medium]`** — good overview, check raw sources for granular questions. Safe for orientation, not for execution.
-- **`[coverage: low]`** — wiki is incomplete here, defer to raw. Anyone (including future Claude) acting on this section should read the raw inputs first.
+- **`[coverage: high]`** - trust this section, skip the raw files. Production-ready content.
+- **`[coverage: medium]`** - good overview, check raw sources for granular questions. Safe for orientation, not for execution.
+- **`[coverage: low]`** - wiki is incomplete here, defer to raw. Anyone (including future Claude) acting on this section should read the raw inputs first.
 
-The same plugin reports going from "13+ raw files / ~3,200 lines per session" to "INDEX + 2 articles / ~330 lines per session" using these tags as a routing signal — roughly **10× context reduction** for the same answer quality. For the bleu, every section in every `plan/` file should carry a coverage tag by Phase 6.
+The same plugin reports going from "13+ raw files / ~3,200 lines per session" to "INDEX + 2 articles / ~330 lines per session" using these tags as a routing signal - roughly **10× context reduction** for the same answer quality. For the bleu, every section in every `plan/` file should carry a coverage tag by Phase 6.
 
 ### Topic articles vs concept articles
 
@@ -79,24 +79,24 @@ The same plugin distinguishes two article types, generated automatically from th
 
 - **Topic articles** are factual: "what happened?" / "what is this thing?" One per concept identified across raw materials. Lives in `plan/03-components/`, `plan/02-pipelines.md`, etc.
 - **Concept articles** are interpretive and span 3+ topics: "what does this *pattern* mean?" Examples:
-  - "Speed vs Quality Tradeoff — 6 instances where this decision appeared across retention, push notifications, and experiment design"
-  - "Working with the Platform Team — communication patterns and decision dynamics synthesized from 24 meetings"
-  - "Evolution of Retention Thinking — how the approach changed over six months"
+  - "Speed vs Quality Tradeoff - 6 instances where this decision appeared across retention, push notifications, and experiment design"
+  - "Working with the Platform Team - communication patterns and decision dynamics synthesized from 24 meetings"
+  - "Evolution of Retention Thinking - how the approach changed over six months"
 
 For the bleu, topic articles correspond to the `plan/` files. **Concept articles should live in `blueprint/plan/concepts/`** and are generated in Phase 6 once enough topic content exists. Examples for a typical blueprint:
 
-- `concepts/data-flow-tradeoffs.md` — synthesizing the read/write/consistency decisions across components
-- `concepts/auth-everywhere.md` — how authentication threads through every pipeline
-- `concepts/the-state-machine-debate.md` — when components became state machines vs not
+- `concepts/data-flow-tradeoffs.md` - synthesizing the read/write/consistency decisions across components
+- `concepts/auth-everywhere.md` - how authentication threads through every pipeline
+- `concepts/the-state-machine-debate.md` - when components became state machines vs not
 
-Don't force these — they emerge naturally during the lint pass when you notice the same theme in three+ files.
+Don't force these - they emerge naturally during the lint pass when you notice the same theme in three+ files.
 
 ### Contamination control
 
 Obsidian's founder explicitly advises maintaining a separate "agent playground" vault to prevent LLM-generated content from contaminating the high-signal personal vault. Multiple practitioners echo this. The principle for the blueprint workspace:
 
-- **Human-curated artifacts** — `README.md`, `ADRs/`, the actual codebase, anything the team commits and reviews — live OUTSIDE `blueprint/`. They're slow-moving, high-signal, human-authored.
-- **The blueprint workspace** — `blueprint/` — is the LLM's domain. High volume, agent-edited, safe to rewrite. The LLM owns it.
+- **Human-curated artifacts** - `README.md`, `ADRs/`, the actual codebase, anything the team commits and reviews - live OUTSIDE `blueprint/`. They're slow-moving, high-signal, human-authored.
+- **The blueprint workspace** - `blueprint/` - is the LLM's domain. High volume, agent-edited, safe to rewrite. The LLM owns it.
 
 Mixing the two is the canonical failure: the LLM silently overwrites human work, or worse, the LLM treats its own output as ground truth on the next pass. Keep the boundary sharp. The Phase 7 handoff explicitly bridges from `blueprint/` (LLM domain) to the codebase (human + executor domain) so the boundary is preserved during execution.
 
@@ -104,9 +104,9 @@ Mixing the two is the canonical failure: the LLM silently overwrites human work,
 
 The strongest argument for the whole pattern, worth memorizing:
 
-The tedious part of maintaining a knowledge base is not the reading or the thinking — it's the bookkeeping. Updating cross-references, keeping summaries current, noting when new data contradicts old claims, maintaining consistency across dozens of pages. Humans abandon wikis because the maintenance burden grows faster than the value. LLMs don't get bored, don't forget to update a cross-reference, and can touch 15 files in one pass.
+The tedious part of maintaining a knowledge base is not the reading or the thinking - it's the bookkeeping. Updating cross-references, keeping summaries current, noting when new data contradicts old claims, maintaining consistency across dozens of pages. Humans abandon wikis because the maintenance burden grows faster than the value. LLMs don't get bored, don't forget to update a cross-reference, and can touch 15 files in one pass.
 
-Every time the user is tempted to skip a lint pass, surface this. The bookkeeping is exactly what the LLM is for. The human's job is steering, sourcing, and asking the right questions — not maintaining cross-references.
+Every time the user is tempted to skip a lint pass, surface this. The bookkeeping is exactly what the LLM is for. The human's job is steering, sourcing, and asking the right questions - not maintaining cross-references.
 
 Supporting data point: knowledge workers lose **1.8 hours every day** searching for information (APQC 2024). The pattern attacks that problem at the root by building a structured, AI-maintained knowledge base where every claim is traceable. For the bleu specifically: every architectural decision has a home, every research finding has a citation, and "wait, where did we decide that?" becomes a single grep instead of a half-day archaeology dig.
 
@@ -121,7 +121,7 @@ Four techniques that improve quality of life for any implementation of this patt
 
 ### Citation accuracy problem (research-heavy blueprints)
 
-A frequent complaint about LLM-compiled wikis: when ingesting PDFs, the LLM loses page numbers and paraphrases by default. For research-heavy blueprints (compliance, scientific, financial), this matters. The skill's `references/research-and-citations.md` mandates page-level provenance for primary sources — this is why.
+A frequent complaint about LLM-compiled wikis: when ingesting PDFs, the LLM loses page numbers and paraphrases by default. For research-heavy blueprints (compliance, scientific, financial), this matters. The skill's `references/research-and-citations.md` mandates page-level provenance for primary sources - this is why.
 
 ### OWASP injection risk
 
@@ -133,7 +133,7 @@ When you start a new blueprint, do this in order:
 
 1. Create the top-level `blueprint/` directory.
 2. Create `blueprint/README.md` with a one-paragraph project summary and a "how to read this" pointer.
-3. Create `blueprint/index.md` — at first it just lists the files you've made; it grows as the blueprint grows. Every entry is `path — one-sentence summary`.
+3. Create `blueprint/index.md` - at first it just lists the files you've made; it grows as the blueprint grows. Every entry is `path - one-sentence summary`.
 4. Create `blueprint/raw/` and drop the user's original idea into `raw/intake.md` verbatim (with your restated version above it).
 5. Create `blueprint/research/` and `blueprint/plan/` as you start filling them. Don't pre-create empty folders.
 6. Create `blueprint/action-points/` only when you reach Phase 5.
@@ -149,42 +149,42 @@ When you start a new blueprint, do this in order:
 > Coverage legend: [H]igh = trust the wiki, [M]edium = check raw for granular, [L]ow = read raw first.
 
 ## Vision & scope
-- `plan/00-vision.md` [H] — Problem, target users, goals, non-goals, success criteria
+- `plan/00-vision.md` [H] - Problem, target users, goals, non-goals, success criteria
 
 ## Architecture
-- `plan/01-architecture.md` [H] — System diagram, layers, key decisions
-- `plan/02-pipelines.md` [M] — End-to-end flows (signup, ingest, report); rate limit details still in raw
+- `plan/01-architecture.md` [H] - System diagram, layers, key decisions
+- `plan/02-pipelines.md` [M] - End-to-end flows (signup, ingest, report); rate limit details still in raw
 
 ## Components
-- `plan/03-components/auth-service.md` [H] — Token issuance and validation
-- `plan/03-components/ingest-worker.md` [M] — Pulls from queue, normalizes; failure modes still TBD
+- `plan/03-components/auth-service.md` [H] - Token issuance and validation
+- `plan/03-components/ingest-worker.md` [M] - Pulls from queue, normalizes; failure modes still TBD
 - ...
 
 ## Concept articles (synthesized in Phase 6)
-- `plan/concepts/data-flow-tradeoffs.md` [M] — Read/write/consistency decisions across components
-- `plan/concepts/auth-everywhere.md` [H] — How authentication threads through every pipeline
+- `plan/concepts/data-flow-tradeoffs.md` [M] - Read/write/consistency decisions across components
+- `plan/concepts/auth-everywhere.md` [H] - How authentication threads through every pipeline
 
 ## Action points
-- `action-points/AP-01-bootstrap-repo.md` [H] — Initial scaffolding (S)
-- `action-points/AP-02-auth-token-model.md` [H] — Token entity + storage (M)
+- `action-points/AP-01-bootstrap-repo.md` [H] - Initial scaffolding (S)
+- `action-points/AP-02-auth-token-model.md` [H] - Token entity + storage (M)
 - ...
 
 ## Research
-- `research/postgres-vs-sqlite.md` [H] — Storage choice, recommendation: Postgres
-- `research/auth-libraries-2026.md` [M] — Current state of node auth libs; revisit in 30 days
+- `research/postgres-vs-sqlite.md` [H] - Storage choice, recommendation: Postgres
+- `research/auth-libraries-2026.md` [M] - Current state of node auth libs; revisit in 30 days
 ```
 
-If a file isn't in the index, the LLM (you, in the next session) won't find it. Treat the index as load-bearing. The coverage tag in the index summary mirrors the highest-priority section's tag inside the file — it's a routing hint for "should I read this fully or skim it?"
+If a file isn't in the index, the LLM (you, in the next session) won't find it. Treat the index as load-bearing. The coverage tag in the index summary mirrors the highest-priority section's tag inside the file - it's a routing hint for "should I read this fully or skim it?"
 
 ## Lint passes
 
 A lint pass is the LLM equivalent of a code review on the wiki itself. Read everything, look for:
 
-- **Dangling references** — names that don't resolve to a defined component/file.
-- **Contradictions** — two files describing the same thing differently.
-- **Stale info** — research that's more than a few weeks old when the topic moves fast (LLM tooling, JS frameworks, cloud pricing).
-- **Missing summaries** — files not yet entered in `index.md`.
-- **Untraceable claims** — anything that came from research but doesn't cite a source.
+- **Dangling references** - names that don't resolve to a defined component/file.
+- **Contradictions** - two files describing the same thing differently.
+- **Stale info** - research that's more than a few weeks old when the topic moves fast (LLM tooling, JS frameworks, cloud pricing).
+- **Missing summaries** - files not yet entered in `index.md`.
+- **Untraceable claims** - anything that came from research but doesn't cite a source.
 
 Write lint findings into `plan/07-risks-open-questions.md` with severity (high/medium/low) and a proposed fix. Then fix the high-severity ones by editing the affected files.
 

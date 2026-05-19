@@ -1,15 +1,15 @@
 # Action Point Template
 
-Each action point lives in its own file at `blueprint/action-points/AP-NN-<slug>.md`. The numbering is global and stable — once an AP gets a number, that number doesn't change even if the AP is later edited or reordered (use the dependency graph to express order, not the filename).
+Each action point lives in its own file at `blueprint/action-points/AP-NN-<slug>.md`. The numbering is global and stable - once an AP gets a number, that number doesn't change even if the AP is later edited or reordered (use the dependency graph to express order, not the filename).
 
-The default target is ~38 APs for a substantial system. Fewer is fine for smaller systems; more is fine for large ones. The right granularity is: **one AP is a single coherent unit of implementation work that an engineer (or Claude Code) can execute in one focused session without needing to re-plan.** If an AP would take a week or touches 20 files, it's too big — split it. If an AP is "rename this variable," it's too small — fold it into a neighbor.
+The default target is ~38 APs for a substantial system. Fewer is fine for smaller systems; more is fine for large ones. The right granularity is: **one AP is a single coherent unit of implementation work that an engineer (or Claude Code) can execute in one focused session without needing to re-plan.** If an AP would take a week or touches 20 files, it's too big - split it. If an AP is "rename this variable," it's too small - fold it into a neighbor.
 
 ## Template
 
 ```markdown
 # AP-NN: <Title>
 
-**Summary:** <one sentence — what this AP accomplishes>
+**Summary:** <one sentence - what this AP accomplishes>
 
 **Status:** draft | reviewed | approved
 **Complexity:** S | M | L | XL
@@ -33,7 +33,7 @@ Every path here must be a real path that fits the architecture defined in `plan/
 
 ## Code flow
 
-<Prose, function by function. Not pseudocode — describe what each function does, what it calls, what it returns, and what state it touches. The reader should be able to picture the implementation without seeing it.>
+<Prose, function by function. Not pseudocode - describe what each function does, what it calls, what it returns, and what state it touches. The reader should be able to picture the implementation without seeing it.>
 
 Example:
 
@@ -68,7 +68,7 @@ CREATE INDEX tokens_user_id_idx ON tokens(user_id);
 
 ## How it interacts with other components
 
-<Explicit named references to components defined in plan/03-components/. No vague "the auth layer" — say which file.>
+<Explicit named references to components defined in plan/03-components/. No vague "the auth layer" - say which file.>
 
 - **Consumed by:** `plan/03-components/auth-controller.md` calls `issueToken` on successful login.
 - **Calls into:** `plan/03-components/db-layer.md` for inserts; `plan/03-components/crypto-utils.md` for hashing.
@@ -92,7 +92,7 @@ CREATE INDEX tokens_user_id_idx ON tokens(user_id);
 ## Open questions / risks
 
 - Should tokens be revocable individually, or only by user? (Punted to AP-NN+5.)
-- Rate-limit on issuance? (See `plan/06-non-functional.md` — TBD.)
+- Rate-limit on issuance? (See `plan/06-non-functional.md` - TBD.)
 
 ## Research notes
 
@@ -105,7 +105,7 @@ CREATE INDEX tokens_user_id_idx ON tokens(user_id);
 
 1. **No invented names.** Every file path, function name, type, and table name must be consistent with the architecture and component files. If something isn't defined yet, define it in the right `plan/` file *first*, then reference it from the AP.
 2. **Verification is not optional.** An AP without a verification section is a wish, not a plan.
-3. **Edge cases are not optional.** Force yourself to write at least three. If you can't think of three, you haven't thought hard enough — try scale=0, scale=max, and concurrent access as starting prompts.
+3. **Edge cases are not optional.** Force yourself to write at least three. If you can't think of three, you haven't thought hard enough - try scale=0, scale=max, and concurrent access as starting prompts.
 4. **Dependencies are explicit.** "Depends on" should list AP IDs, not vague phrases like "after the auth work."
 5. **Complexity is honest.** S = under an hour. M = a half day. L = a full day or two. XL = split it.
 6. **Cite research.** If the AP makes a choice informed by research, link the research file.
@@ -117,6 +117,6 @@ After all APs are drafted, write `action-points/README.md` containing:
 - A one-paragraph overview of the AP set.
 - A table of all APs with ID, title, complexity, and dependencies.
 - A mermaid graph showing the dependency DAG. Group nodes that can run in parallel.
-- A recommended execution order — a topological sort of the DAG, with parallel groups marked.
+- A recommended execution order - a topological sort of the DAG, with parallel groups marked.
 
 The execution order is what the user will hand to Claude Code (or any other implementer) when the blueprint is approved.

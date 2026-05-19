@@ -1,6 +1,6 @@
 {
   "name": "bleu",
-  "description": "Turn an idea into a deeply structured, lint-passing, file-backed system plan before writing any code.",
+  "description": "Claude Code plugin for living blueprints. Turn an idea into a deeply structured, lint-passing, file-backed system plan before writing any code.",
   "version": "1.0.0",
   "license": "MIT",
   "author": {
@@ -8,5 +8,22 @@
   },
   "homepage": "https://github.com/Nirvaan05/Bleu-plugin",
   "repository": "https://github.com/Nirvaan05/Bleu-plugin",
-  "keywords": ["planning", "architecture", "spec-driven", "knowledge-base", "blueprint", "system-design"]
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "claude-code-skill",
+    "claude-skills",
+    "anthropic",
+    "agent-skills",
+    "subagents",
+    "spec-driven",
+    "spec-driven-development",
+    "planning",
+    "blueprint",
+    "architecture",
+    "knowledge-base",
+    "wiki",
+    "adr",
+    "system-design"
+  ]
 }

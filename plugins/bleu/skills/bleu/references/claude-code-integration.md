@@ -2,7 +2,7 @@
 
 This file is read when the user is running the skill inside **Claude Code** and wants the blueprint workspace to be a living, automated system rather than a folder of markdown files.
 
-**Verified against the live Claude Code docs.** The canonical sources are below — re-fetch them before generating any settings/agent files, because the schema evolves:
+**Verified against the live Claude Code docs.** The canonical sources are below - re-fetch them before generating any settings/agent files, because the schema evolves:
 
 - Hooks reference: https://code.claude.com/docs/en/hooks
 - Subagents: https://code.claude.com/docs/en/sub-agents
@@ -15,43 +15,43 @@ If the user asks Claude Code itself "how do I configure X", the canonical built-
 
 ## Detecting Claude Code
 
-Indicators: a `.claude/` directory exists, a `CLAUDE.md` is present, the user's prompt mentions Claude Code, or environment variables prefixed `CLAUDE_*` are set. Run `/agents` and `/hooks` to verify what's already configured. In any other surface, skip this entire file — the base skill works fine on plain markdown.
+Indicators: a `.claude/` directory exists, a `CLAUDE.md` is present, the user's prompt mentions Claude Code, or environment variables prefixed `CLAUDE_*` are set. Run `/agents` and `/hooks` to verify what's already configured. In any other surface, skip this entire file - the base skill works fine on plain markdown.
 
 ## What's available
 
 Claude Code gives you four mechanisms to make the blueprint workspace automated:
 
-1. **Hooks** — shell commands, HTTP endpoints, **prompt-LLM** evaluations, or **agent** verifications that fire on lifecycle events.
-2. **Subagents** — isolated context windows with locked tool whitelists, optional inline MCP servers, optional persistent memory, optional worktree isolation, and their own hooks scoped to their lifecycle.
-3. **MCP servers** — capability surfaces, scoped per-subagent or globally.
-4. **Settings hierarchy** — `~/.claude/settings.json` (user), `.claude/settings.json` (project, checked in), `.claude/settings.local.json` (project, gitignored), plus managed policy.
+1. **Hooks** - shell commands, HTTP endpoints, **prompt-LLM** evaluations, or **agent** verifications that fire on lifecycle events.
+2. **Subagents** - isolated context windows with locked tool whitelists, optional inline MCP servers, optional persistent memory, optional worktree isolation, and their own hooks scoped to their lifecycle.
+3. **MCP servers** - capability surfaces, scoped per-subagent or globally.
+4. **Settings hierarchy** - `~/.claude/settings.json` (user), `.claude/settings.json` (project, checked in), `.claude/settings.local.json` (project, gitignored), plus managed policy.
 
 Plus three things that show up in the blueprint workspace specifically:
 
-5. **`CLAUDE.md`** — persistent project rules. The blueprint's reading-order pointer goes here so every session starts oriented.
-6. **`.claude/rules/*.md`** — conditional rule files that load via the `InstructionsLoaded` event. This is where schema-as-code rules live (see `advanced-architecture.md`).
-7. **`/agents` and `/hooks`** — read-only browsers for what's currently configured. Tell the user about these once.
+5. **`CLAUDE.md`** - persistent project rules. The blueprint's reading-order pointer goes here so every session starts oriented.
+6. **`.claude/rules/*.md`** - conditional rule files that load via the `InstructionsLoaded` event. This is where schema-as-code rules live (see `advanced-architecture.md`).
+7. **`/agents` and `/hooks`** - read-only browsers for what's currently configured. Tell the user about these once.
 
 ## Always offer the menu before installing
 
-Surface the integrations as an explicit menu and show every file you'd create **before** writing any of them. `.claude/` files are executable configuration that gets committed and shipped to teammates — they belong in code review.
+Surface the integrations as an explicit menu and show every file you'd create **before** writing any of them. `.claude/` files are executable configuration that gets committed and shipped to teammates - they belong in code review.
 
 Example menu:
 
 > "I'm running in Claude Code. I can wire the blueprint workspace with:
 >
-> 1. **KB Curator subagent** — owns the wiki's health, with hooks scoped to its own lifecycle. No global settings changes.
-> 2. **`FileChanged` hook** — fires when files in `blueprint/raw/` change on disk (from any source — Claude, MCP servers, external scripts). Triggers compile.
-> 3. **`SessionStart` hook** — loads `blueprint/index.md` and `blueprint/.telemetry/health.md` into context on every session.
-> 4. **`Stop`/`SubagentStop` hook** — git auto-commit, scoped to `blueprint/`.
-> 5. **`PreCompact` hook** — backs up the transcript before context compaction.
-> 6. **Optional MCP servers** — scoped inline to the Curator (filesystem, git, docs-fetch).
+> 1. **KB Curator subagent** - owns the wiki's health, with hooks scoped to its own lifecycle. No global settings changes.
+> 2. **`FileChanged` hook** - fires when files in `blueprint/raw/` change on disk (from any source - Claude, MCP servers, external scripts). Triggers compile.
+> 3. **`SessionStart` hook** - loads `blueprint/index.md` and `blueprint/.telemetry/health.md` into context on every session.
+> 4. **`Stop`/`SubagentStop` hook** - git auto-commit, scoped to `blueprint/`.
+> 5. **`PreCompact` hook** - backs up the transcript before context compaction.
+> 6. **Optional MCP servers** - scoped inline to the Curator (filesystem, git, docs-fetch).
 >
 > Want all six, some, or none? I'll show you the files first."
 
 ## 1. The KB Curator subagent
 
-`.claude/agents/kb-curator.md`. Hooks live **in this file's frontmatter** — that's the modern pattern. Settings file changes are unnecessary.
+`.claude/agents/kb-curator.md`. Hooks live **in this file's frontmatter** - that's the modern pattern. Settings file changes are unnecessary.
 
 ```markdown
 ---
@@ -83,7 +83,7 @@ You are the KB Curator for a bleu workspace. Your job is to keep
 the markdown wiki under blueprint/ coherent, navigable, and auditable.
 
 You do not write code. You do not modify anything outside blueprint/. You do
-not make architectural decisions on your own — you surface them for the user.
+not make architectural decisions on your own - you surface them for the user.
 
 ## The workspace
 Layout is documented in the bleu skill (preloaded above). Read
@@ -95,7 +95,7 @@ references/knowledge-base-pattern.md for the conventions before acting.
 Triggered when a new file lands in blueprint/raw/. Read it, decide which plan
 files it affects (or whether it warrants a new component / research file),
 write or update those files, and update blueprint/index.md. If the raw file
-contradicts existing plan content, do NOT silently overwrite — write a note
+contradicts existing plan content, do NOT silently overwrite - write a note
 in plan/07-risks-open-questions.md and flag it for the user.
 
 ### Lint
@@ -103,7 +103,7 @@ Triggered after edits to plan/ or action-points/, or on demand. Walk the
 wiki and look for: dangling references, contradictions, stale index entries,
 untraceable claims, action points that depend on undefined work. Write
 findings to blueprint/.reflection/proposals/ for the Auditor to validate.
-Do not fix high-severity items yourself — surface them.
+Do not fix high-severity items yourself - surface them.
 
 ### Index
 Rebuild blueprint/index.md from the current state. One line per file:
@@ -126,11 +126,11 @@ preferences. Update it after each significant cycle.
 
 ### Why each frontmatter field
 
-- **`tools`** — explicit whitelist. Without this, the curator inherits *every* tool from the parent, including all MCP tools. The whitelist is the security boundary.
-- **`memory: project`** — Claude Code provides a persistent directory at `.claude/agent-memory/kb-curator/` that survives across conversations. The first 200 lines / 25 KB of `MEMORY.md` is auto-injected into the curator's prompt at startup, and Read/Write/Edit are auto-enabled so it can manage the file. This is a built-in feature — no hand-rolled "notes" pattern needed. Use `user` scope for cross-project learnings, `local` for gitignored personal notes.
-- **`skills: [bleu]`** — preloads the entire bleu skill content into the curator's context at startup. Subagents don't inherit skills from the parent, so this must be explicit. The curator now knows the workspace conventions without having to discover them.
-- **`hooks` in frontmatter** — scoped to the curator's lifecycle. When the curator finishes, the hooks are cleaned up. No pollution of project-wide settings. `Stop` hooks defined here are automatically converted to `SubagentStop` at runtime.
-- **`if: "Write(blueprint/**)"`** — uses [permission rule syntax](https://code.claude.com/docs/en/permissions) to filter on tool input declaratively. The hook only spawns when the write target matches the pattern. Cleaner than path-checking shell logic.
+- **`tools`** - explicit whitelist. Without this, the curator inherits *every* tool from the parent, including all MCP tools. The whitelist is the security boundary.
+- **`memory: project`** - Claude Code provides a persistent directory at `.claude/agent-memory/kb-curator/` that survives across conversations. The first 200 lines / 25 KB of `MEMORY.md` is auto-injected into the curator's prompt at startup, and Read/Write/Edit are auto-enabled so it can manage the file. This is a built-in feature - no hand-rolled "notes" pattern needed. Use `user` scope for cross-project learnings, `local` for gitignored personal notes.
+- **`skills: [bleu]`** - preloads the entire bleu skill content into the curator's context at startup. Subagents don't inherit skills from the parent, so this must be explicit. The curator now knows the workspace conventions without having to discover them.
+- **`hooks` in frontmatter** - scoped to the curator's lifecycle. When the curator finishes, the hooks are cleaned up. No pollution of project-wide settings. `Stop` hooks defined here are automatically converted to `SubagentStop` at runtime.
+- **`if: "Write(blueprint/**)"`** - uses [permission rule syntax](https://code.claude.com/docs/en/permissions) to filter on tool input declaratively. The hook only spawns when the write target matches the pattern. Cleaner than path-checking shell logic.
 
 ### Alternative: `disallowedTools` instead of whitelist
 
@@ -148,20 +148,20 @@ For destructive lint passes (e.g., experimental large-scale refactor of the wiki
 
 ### Optional: always run in background
 
-Add `background: true` to the curator's frontmatter to make Claude always spawn it as a background task. The user keeps working in the main conversation while the curator compiles in parallel. **Caveat**: background subagents auto-deny any permission they didn't get up front — Claude Code prompts for the full set before launch. Test interactively first.
+Add `background: true` to the curator's frontmatter to make Claude always spawn it as a background task. The user keeps working in the main conversation while the curator compiles in parallel. **Caveat**: background subagents auto-deny any permission they didn't get up front - Claude Code prompts for the full set before launch. Test interactively first.
 
 ## 2. Hook events worth using for the blueprint workspace
 
 | Event | Why it matters here | Notes |
 |---|---|---|
-| `SessionStart` | Load `blueprint/index.md` and `.telemetry/health.md` into context. Matchers: `startup`, `resume`, `clear`, `compact` — usually only fire on `startup\|resume`. | Stdout from the script is added to context. Only `command` hooks supported. |
-| `FileChanged` | Auto-compile when `blueprint/raw/` changes. Fires regardless of who wrote (Claude, MCP server, external script). The matcher is **basename only** — filter further inside the script. | Has access to `CLAUDE_ENV_FILE`. No decision control. |
+| `SessionStart` | Load `blueprint/index.md` and `.telemetry/health.md` into context. Matchers: `startup`, `resume`, `clear`, `compact` - usually only fire on `startup\|resume`. | Stdout from the script is added to context. Only `command` hooks supported. |
+| `FileChanged` | Auto-compile when `blueprint/raw/` changes. Fires regardless of who wrote (Claude, MCP server, external script). The matcher is **basename only** - filter further inside the script. | Has access to `CLAUDE_ENV_FILE`. No decision control. |
 | `Stop` / `SubagentStop` | Git auto-commit. Both must be registered to catch both main-agent and subagent finishes. Check `stop_hook_active` to avoid loops. | Returns `additionalContext` to push messages back to the conversation. |
 | `PreCompact` | Back up the transcript before compaction so nothing is lost. | Matchers: `manual`, `auto`. |
-| `InstructionsLoaded` | Fires when `CLAUDE.md` or `.claude/rules/*.md` loads. Useful for telemetry / audit only — no decision control. | Used by schema-as-code (see `advanced-architecture.md`). |
+| `InstructionsLoaded` | Fires when `CLAUDE.md` or `.claude/rules/*.md` loads. Useful for telemetry / audit only - no decision control. | Used by schema-as-code (see `advanced-architecture.md`). |
 | `UserPromptSubmit` | Optionally inject the wiki health score into the user's first prompt of a session. | Plain stdout becomes context. |
 
-### What I previously got wrong — `PreToolUse` decision format
+### What I previously got wrong - `PreToolUse` decision format
 
 `PreToolUse` no longer uses top-level `decision: "approve"/"block"`. That syntax is **deprecated** for this event. The current format is:
 
@@ -220,9 +220,9 @@ esac
 exit 0
 ```
 
-`FileChanged` has no decision control, and its stdout is shown to the user (not to Claude). The recommended pattern is to **write a marker file** that the next `SessionStart` or `UserPromptSubmit` handler picks up, then surfaces to Claude as context: "There are 3 pending files in blueprint/.curator-pending/compile.queue — invoke kb-curator to process them."
+`FileChanged` has no decision control, and its stdout is shown to the user (not to Claude). The recommended pattern is to **write a marker file** that the next `SessionStart` or `UserPromptSubmit` handler picks up, then surfaces to Claude as context: "There are 3 pending files in blueprint/.curator-pending/compile.queue - invoke kb-curator to process them."
 
-If you only need to react to Claude's own edits and not external writes, `PostToolUse` matched on `Write|Edit` with `if: "Write(blueprint/raw/**)"` is simpler — but only catches Claude. **Use `FileChanged` for the comprehensive case; `PostToolUse` for Claude-only.**
+If you only need to react to Claude's own edits and not external writes, `PostToolUse` matched on `Write|Edit` with `if: "Write(blueprint/raw/**)"` is simpler - but only catches Claude. **Use `FileChanged` for the comprehensive case; `PostToolUse` for Claude-only.**
 
 ## 3. SessionStart hook example
 
@@ -273,7 +273,7 @@ fi
 exit 0
 ```
 
-`SessionStart` is one of only two events where stdout is added directly to the conversation context (the other is `UserPromptSubmit`). Keep it fast — it runs on every session start and resume. Only `command` hooks are supported on `SessionStart`.
+`SessionStart` is one of only two events where stdout is added directly to the conversation context (the other is `UserPromptSubmit`). Keep it fast - it runs on every session start and resume. Only `command` hooks are supported on `SessionStart`.
 
 ## 4. Git auto-commit hook
 
@@ -340,10 +340,10 @@ echo "blueprint: committed $COUNT file(s)"
 
 ### What changed from my previous version
 
-- **`async: true`** — runs the commit in the background so it doesn't block Claude's response. Critical for the auto-commit case where the user shouldn't have to wait.
-- **`stop_hook_active` check** — the canonical loop-protection field built into the `Stop` event payload. I previously invented a `.curator-running` flag; this is the documented way.
-- **Both `Stop` and `SubagentStop` registered** — the docs explicitly recommend registering both to reliably catch the end of any run (subagent finishes don't fire `Stop`).
-- **Stages only `blueprint/`** — never touches application code the user might be mid-edit on.
+- **`async: true`** - runs the commit in the background so it doesn't block Claude's response. Critical for the auto-commit case where the user shouldn't have to wait.
+- **`stop_hook_active` check** - the canonical loop-protection field built into the `Stop` event payload. I previously invented a `.curator-running` flag; this is the documented way.
+- **Both `Stop` and `SubagentStop` registered** - the docs explicitly recommend registering both to reliably catch the end of any run (subagent finishes don't fire `Stop`).
+- **Stages only `blueprint/`** - never touches application code the user might be mid-edit on.
 
 ## 5. MCP servers, scoped to subagents
 
@@ -364,8 +364,8 @@ mcpServers:
 
 Two patterns shown above:
 
-- **Inline definition** (`filesystem-blueprint`) — keyed by the server name, with the same schema as `.mcp.json` entries. Connected when the curator starts, disconnected when it finishes. The parent conversation never sees these tools.
-- **String reference** (`git`) — references an MCP server already configured in `.mcp.json`. Reuses the parent session's connection.
+- **Inline definition** (`filesystem-blueprint`) - keyed by the server name, with the same schema as `.mcp.json` entries. Connected when the curator starts, disconnected when it finishes. The parent conversation never sees these tools.
+- **String reference** (`git`) - references an MCP server already configured in `.mcp.json`. Reuses the parent session's connection.
 
 Use inline for capabilities you want hidden from the main conversation (saves context). Use string references for capabilities the main conversation also needs.
 
@@ -373,9 +373,9 @@ Use inline for capabilities you want hidden from the main conversation (saves co
 
 The curator is read/write within `blueprint/`. Don't give it:
 
-- **WebFetch / WebSearch** — research belongs to a separate Researcher agent (see `advanced-architecture.md`) so citations stay accountable.
-- **Action-capable MCPs** (deploy, send messages, charge cards) — the blueprint phase is read-heavy. Action belongs in Phase 7 execution targets.
-- **Bash** — would defeat the read-only-outside-blueprint guarantee.
+- **WebFetch / WebSearch** - research belongs to a separate Researcher agent (see `advanced-architecture.md`) so citations stay accountable.
+- **Action-capable MCPs** (deploy, send messages, charge cards) - the blueprint phase is read-heavy. Action belongs in Phase 7 execution targets.
+- **Bash** - would defeat the read-only-outside-blueprint guarantee.
 
 ## 6. Scoping which subagents the main agent can spawn
 
@@ -404,10 +404,10 @@ tools: Agent(researcher, kb-curator, kb-linter, kb-auditor), Read, Write, Edit, 
 
 ## 7. Prompt hooks and agent hooks
 
-Two hook types I previously didn't surface — both supported on `PermissionRequest`, `PostToolUse`, `PostToolUseFailure`, `PreToolUse`, `Stop`, `SubagentStop`, `TaskCompleted`, `TaskCreated`, and `UserPromptSubmit`:
+Two hook types I previously didn't surface - both supported on `PermissionRequest`, `PostToolUse`, `PostToolUseFailure`, `PreToolUse`, `Stop`, `SubagentStop`, `TaskCompleted`, `TaskCreated`, and `UserPromptSubmit`:
 
-- **Prompt hooks** (`type: "prompt"`) — instead of running a shell command, send the hook input + a prompt to a Claude model (Haiku by default) for a structured yes/no decision. Cheap, no script to maintain. Example: a prompt hook on `Stop` of the curator that reads the changed plan files and asks Haiku "do these files violate any rule in `.claude/rules/blueprint-schema.md`?"
-- **Agent hooks** (`type: "agent"`) — spawn a verification subagent with tool access (Read/Grep/Glob) to inspect the actual files before deciding. More expensive but grounded. This is what the **Auditor** from `advanced-architecture.md` should be: an agent hook on `SubagentStop` of the kb-linter that spawns the auditor to validate the linter's proposals.
+- **Prompt hooks** (`type: "prompt"`) - instead of running a shell command, send the hook input + a prompt to a Claude model (Haiku by default) for a structured yes/no decision. Cheap, no script to maintain. Example: a prompt hook on `Stop` of the curator that reads the changed plan files and asks Haiku "do these files violate any rule in `.claude/rules/blueprint-schema.md`?"
+- **Agent hooks** (`type: "agent"`) - spawn a verification subagent with tool access (Read/Grep/Glob) to inspect the actual files before deciding. More expensive but grounded. This is what the **Auditor** from `advanced-architecture.md` should be: an agent hook on `SubagentStop` of the kb-linter that spawns the auditor to validate the linter's proposals.
 
 Where these matter for the blueprint workspace:
 
@@ -416,7 +416,7 @@ Where these matter for the blueprint workspace:
 
 Not supported on: `SessionStart`, `FileChanged`, `PreCompact`, `InstructionsLoaded`, `Notification`, etc. (those are command-only or have no decision control at all).
 
-## 8. CLAUDE.md, `.claude/rules/`, and `InstructionsLoaded` — what the research actually shows
+## 8. CLAUDE.md, `.claude/rules/`, and `InstructionsLoaded` - what the research actually shows
 
 **This section reverses the previous version's advice.** A February 2026 ETH Zurich paper (Gloaguen et al., "Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?", https://arxiv.org/abs/2602.11988) ran the first rigorous empirical test on repository-level context files. They built **AGENTbench** (138 real-world Python tasks from 12 less-popular repositories) and tested four agents (Claude Code with Sonnet 4.5, Codex with GPT-5.2 and GPT-5.1 Mini, Qwen Code) across three conditions: no context file, LLM-generated, human-written.
 
@@ -428,7 +428,7 @@ The findings, summarized:
 | **Human-written** | +4% on average | +14% to +19% |
 | **No context file** | baseline | baseline |
 
-LLM-generated context files (the kind you get from `/init`) **actively hurt** task success. Human-written files give a marginal benefit but still cost 14-22% more reasoning tokens for the same outcome. **Stronger models do not produce better context files.** Context files do **not** help agents find relevant files faster — agents took roughly the same number of steps to reach target files regardless of whether a context file was present. GPT-5.1 Mini was caught spending extra steps re-reading context files already loaded into its context window — pure waste.
+LLM-generated context files (the kind you get from `/init`) **actively hurt** task success. Human-written files give a marginal benefit but still cost 14-22% more reasoning tokens for the same outcome. **Stronger models do not produce better context files.** Context files do **not** help agents find relevant files faster - agents took roughly the same number of steps to reach target files regardless of whether a context file was present. GPT-5.1 Mini was caught spending extra steps re-reading context files already loaded into its context window - pure waste.
 
 Why does it backfire? The agent follows the instructions in the file faithfully (when AGENTS.md says `use uv`, agents use `uv` 1.6× per task instance vs <0.01× without). But that faithful following triggers broader exploration, deeper testing, more reasoning, without reliably improving the outcome. Compounding the problem, Anthropic's own implementation injects this with every CLAUDE.md load:
 
@@ -450,8 +450,8 @@ For the bleu workspace specifically:
 3. **Write for the gap, not the overview.** Encode what the repository doesn't already explain. Tool choices that diverge from defaults (`use uv, not pip`), non-obvious test invocations (`pnpm test:integration --run`), constraints not apparent from the code. Skip everything inferable from `package.json`, `pyproject.toml`, `README.md`, existing config files. **A `CLAUDE.md` that restates the README is probably hurting you.**
 4. **Target under 150 lines** for the file as a whole. Frontier thinking models follow ~150-200 instructions reliably, and Claude Code's own system prompt has ~50, so you have ~100-150 instructions to spend wisely.
 5. **Use hooks instead of `CLAUDE.md` for things that must happen every time.** Hooks are deterministic; `CLAUDE.md` instructions are advisory. From Anthropic's own best-practices doc: "Use hooks for actions that must happen every time with zero exceptions. Hooks run scripts automatically. Unlike CLAUDE.md instructions which are advisory, hooks are deterministic and guarantee the action happens."
-6. **If `/init` runs, delete most of what it generates.** The default file includes filler ("this is a TypeScript project") that competes for attention. Edit down from a draft instead of starting from a blank file — but be aggressive about deletion.
-7. **The hidden value isn't the tokens — it's the articulation.** Widely cited developer comment: "The actual token-level context CLAUDE.md provides matters less than the fact that writing it forces you to articulate things about your codebase that were previously just in your head." For the bleu, the same logic applies to `.claude/rules/blueprint-schema.md` — writing the rules down forces you to make implicit conventions explicit. Future Claudes benefit; future humans benefit too.
+6. **If `/init` runs, delete most of what it generates.** The default file includes filler ("this is a TypeScript project") that competes for attention. Edit down from a draft instead of starting from a blank file - but be aggressive about deletion.
+7. **The hidden value isn't the tokens - it's the articulation.** Widely cited developer comment: "The actual token-level context CLAUDE.md provides matters less than the fact that writing it forces you to articulate things about your codebase that were previously just in your head." For the bleu, the same logic applies to `.claude/rules/blueprint-schema.md` - writing the rules down forces you to make implicit conventions explicit. Future Claudes benefit; future humans benefit too.
 
 ### A research-informed `CLAUDE.md` for a project using this skill
 
@@ -474,9 +474,9 @@ owns it; do not modify files there directly. To ingest new info, write to
 
 That's it. ~15 lines. Everything else (architecture, test framework, language version, build commands) is inferable from the project's actual files.
 
-### `.claude/rules/*.md` — a different mechanism
+### `.claude/rules/*.md` - a different mechanism
 
-`.claude/rules/*.md` is related but different from `CLAUDE.md`: rule files that load **conditionally** via the `InstructionsLoaded` event when Claude accesses certain paths. This is the natural home for **schema-as-code** rules from `advanced-architecture.md`. Rules with `paths:` frontmatter only load when relevant — they don't compete for attention on every session like `CLAUDE.md` does.
+`.claude/rules/*.md` is related but different from `CLAUDE.md`: rule files that load **conditionally** via the `InstructionsLoaded` event when Claude accesses certain paths. This is the natural home for **schema-as-code** rules from `advanced-architecture.md`. Rules with `paths:` frontmatter only load when relevant - they don't compete for attention on every session like `CLAUDE.md` does.
 
 ```markdown
 ---
@@ -492,7 +492,7 @@ Every action point file at action-points/AP-*.md MUST have:
 ...
 ```
 
-When Claude accesses any file matching `paths`, this rule file loads into context. The Linter can then enforce these rules — they're already in scope. The `InstructionsLoaded` event fires when this happens; you can register a hook on it for telemetry (no decision control — it's observability only).
+When Claude accesses any file matching `paths`, this rule file loads into context. The Linter can then enforce these rules - they're already in scope. The `InstructionsLoaded` event fires when this happens; you can register a hook on it for telemetry (no decision control - it's observability only).
 
 The advantage of `.claude/rules/` over `CLAUDE.md` for blueprint-specific rules is that the rules are scoped to when they're relevant. They don't pay the always-loaded tax that `CLAUDE.md` does.
 
@@ -526,7 +526,7 @@ Critical implementation detail: the initializer and coding agents are **the same
 
 ### Mapping to the bleu workflow
 
-The bleu already follows this shape conceptually — Phase 0 (intake) and Phase 1 (research) are the initializer; Phases 2-6 are the coding agent. What was missing: the explicit `claude-progress.txt` analog. The blueprint already has files that play this role, but they weren't being actively surfaced.
+The bleu already follows this shape conceptually - Phase 0 (intake) and Phase 1 (research) are the initializer; Phases 2-6 are the coding agent. What was missing: the explicit `claude-progress.txt` analog. The blueprint already has files that play this role, but they weren't being actively surfaced.
 
 **Recommended additions to `blueprint/`** for users adopting Anthropic's harness pattern:
 
@@ -538,7 +538,7 @@ blueprint/
 ```
 
 - **`blueprint/progress.md`** is updated by the Curator (or by Claude directly) at the end of every session. Format: a checklist organized by phase, with the current cursor marked. The `SessionStart` hook reads it and surfaces "you were here" to Claude on the next run.
-- **`blueprint/features.md`** is written once during Phase 0 by the initializer. It's the comprehensive list of every feature the user has scoped, expanded beyond their initial prompt. **Its job is to prevent premature completion** — the agent has to walk through every item before declaring the blueprint done. Anthropic's research found that without this file, agents tend to one-shot a project at maybe 60% complete and call it done.
+- **`blueprint/features.md`** is written once during Phase 0 by the initializer. It's the comprehensive list of every feature the user has scoped, expanded beyond their initial prompt. **Its job is to prevent premature completion** - the agent has to walk through every item before declaring the blueprint done. Anthropic's research found that without this file, agents tend to one-shot a project at maybe 60% complete and call it done.
 
 The `SessionStart` hook from section 3 should be extended to surface both files alongside `index.md`.
 
@@ -546,16 +546,16 @@ The `SessionStart` hook from section 3 should be extended to surface both files 
 
 From Anthropic's posts:
 
-- **Premature completion**: agents declare a project "complete" at maybe 60% done. *Mitigation: the comprehensive feature list — the agent must walk through all of it before calling it done.*
+- **Premature completion**: agents declare a project "complete" at maybe 60% done. *Mitigation: the comprehensive feature list - the agent must walk through all of it before calling it done.*
 - **Context anxiety**: model wraps up work prematurely as it approaches what it *believes* is its context limit. Sonnet 4.5 exhibited this strongly; Opus 4.6 mostly fixed it. *Mitigation: context resets (clean slate) plus structured handoff artifacts. The progress.md file is exactly that handoff artifact.*
 
-### Self-evaluation pitfall — "agents praise their own work"
+### Self-evaluation pitfall - "agents praise their own work"
 
 From Anthropic's harness post:
 
-> "When asked to evaluate work they've produced, agents tend to respond by confidently praising the work — even when, to a human observer, the quality is obviously mediocre. This problem is particularly pronounced for subjective tasks like design, where there is no binary check equivalent to a verifiable software test."
+> "When asked to evaluate work they've produced, agents tend to respond by confidently praising the work - even when, to a human observer, the quality is obviously mediocre. This problem is particularly pronounced for subjective tasks like design, where there is no binary check equivalent to a verifiable software test."
 
-This is the canonical justification for the proposer-validator separation in `advanced-architecture.md`. The Linter is **not** the same agent as the Curator. The Auditor is **not** the same agent as the Linter. Anthropic's GAN-inspired three-agent architecture (Planner / Generator / Evaluator) makes this structural — and so does this skill's four-agent team.
+This is the canonical justification for the proposer-validator separation in `advanced-architecture.md`. The Linter is **not** the same agent as the Curator. The Auditor is **not** the same agent as the Linter. Anthropic's GAN-inspired three-agent architecture (Planner / Generator / Evaluator) makes this structural - and so does this skill's four-agent team.
 
 ### "Audit your harness as models improve"
 
@@ -568,11 +568,11 @@ When moving from Sonnet 4.5 → Opus 4.6, Rajasekaran specifically dropped conte
 
 ## 10. UX shortcuts to mention to the user once
 
-- **`/agents`** — interactive browser/manager for installed subagents. The user can `/agents` to see what's installed, edit them inline, or generate new ones.
-- **`/hooks`** — read-only browser of all configured hooks across user/project/local/plugin scopes. Useful for "wait, what's actually firing?"
-- **`@-mention`** — type `@"kb-curator (agent)"` to invoke a specific agent for one task.
-- **`claude --agent kb-curator`** — start a session where the main thread itself is the curator. The agent's system prompt replaces the default Claude Code system prompt.
-- **`claude agents`** — CLI command to list all configured subagents grouped by source.
+- **`/agents`** - interactive browser/manager for installed subagents. The user can `/agents` to see what's installed, edit them inline, or generate new ones.
+- **`/hooks`** - read-only browser of all configured hooks across user/project/local/plugin scopes. Useful for "wait, what's actually firing?"
+- **`@-mention`** - type `@"kb-curator (agent)"` to invoke a specific agent for one task.
+- **`claude --agent kb-curator`** - start a session where the main thread itself is the curator. The agent's system prompt replaces the default Claude Code system prompt.
+- **`claude agents`** - CLI command to list all configured subagents grouped by source.
 - **`disableAllHooks: true`** in any settings file to temporarily kill all hooks without removing them (managed-hook respecting).
 
 ## 11. When NOT to install any of this
@@ -582,10 +582,10 @@ When moving from Sonnet 4.5 → Opus 4.6, Rajasekaran specifically dropped conte
 - The repo is shared with people who haven't agreed to `.claude/` config landing in their tree.
 - The user is on a Claude Code version older than the features used (the docs flag specific version requirements; the `defer` permissionDecision needs ≥ 2.1.89, the `Agent` rename of `Task` happened at 2.1.63, etc.). When in doubt, generate without the version-gated feature and tell the user what was skipped and why.
 - The user explicitly says "just give me the files, no automation."
-- The user wants this packaged as a Claude Code **plugin** — plugin subagents do **not** support `hooks`, `mcpServers`, or `permissionMode` frontmatter fields. If the user needs those, the agent file must live in `.claude/agents/` or `~/.claude/agents/`, not inside a plugin.
+- The user wants this packaged as a Claude Code **plugin** - plugin subagents do **not** support `hooks`, `mcpServers`, or `permissionMode` frontmatter fields. If the user needs those, the agent file must live in `.claude/agents/` or `~/.claude/agents/`, not inside a plugin.
 
 Fall back to the file-only workflow. The skill is fully usable without any of this.
 
 ## Final reminder
 
-Before generating any settings file, agent file, or hook script, **re-fetch the canonical docs** linked at the top. Schemas evolve. The `claude-code-guide` built-in subagent is the fastest way to verify a specific question — Claude Code will spawn it automatically when you ask "how do I configure X."
+Before generating any settings file, agent file, or hook script, **re-fetch the canonical docs** linked at the top. Schemas evolve. The `claude-code-guide` built-in subagent is the fastest way to verify a specific question - Claude Code will spawn it automatically when you ask "how do I configure X."

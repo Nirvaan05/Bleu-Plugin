@@ -6,7 +6,7 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Claude Code state (NOT .claude-plugin/ — that's the plugin manifest, tracked)
+# Claude Code state (NOT .claude-plugin/ - that's the plugin manifest, tracked)
 .claude/
 .claude.json
 

@@ -5,15 +5,15 @@
 
 ## Why this matters
 
-LLM chat sessions die. Context windows fill. The user runs `/clear`. Terminals crash. The model gets restarted between turns. None of this is exotic — it's the default. Anthropic's own Agent SDK docs are explicit on this point:
+LLM chat sessions die. Context windows fill. The user runs `/clear`. Terminals crash. The model gets restarted between turns. None of this is exotic - it's the default. Anthropic's own Agent SDK docs are explicit on this point:
 
-> "Don't rely on session resume. Capture the results you need (analysis output, decisions, file diffs) as application state and pass them into a fresh session's prompt. This is often more robust than shipping transcript files around." — `platform.claude.com/docs/en/agent-sdk/sessions`
+> "Don't rely on session resume. Capture the results you need (analysis output, decisions, file diffs) as application state and pass them into a fresh session's prompt. This is often more robust than shipping transcript files around." - `platform.claude.com/docs/en/agent-sdk/sessions`
 
 The bleu skill already writes most of its work to disk, but disk-as-source-of-truth needs three more pieces to survive a `/clear`:
 
-1. **A current-state pointer** — one file that tells a fresh Claude exactly where the project is right now, in 30 seconds of reading.
-2. **An append-only history** — so a fresh Claude can see what happened, not just what exists.
-3. **A decision log** — so architectural choices made in past sessions are first-class artifacts, not buried in chat scrollback.
+1. **A current-state pointer** - one file that tells a fresh Claude exactly where the project is right now, in 30 seconds of reading.
+2. **An append-only history** - so a fresh Claude can see what happened, not just what exists.
+3. **A decision log** - so architectural choices made in past sessions are first-class artifacts, not buried in chat scrollback.
 
 This document specifies all three, plus the read order a resuming Claude must follow.
 
@@ -42,7 +42,7 @@ Each file has a strict shape and a strict update cadence. Strictness is the poin
 
 ---
 
-## `SESSION.md` — current snapshot
+## `SESSION.md` - current snapshot
 
 **Purpose**: in 30 seconds of reading, a fresh Claude knows what phase the project is in, what was just done, what is blocked, and where to look next.
 
@@ -53,7 +53,7 @@ Each file has a strict shape and a strict update cadence. Strictness is the poin
 ### Template
 
 ```markdown
-# SESSION — <project name>
+# SESSION - <project name>
 
 > Last updated: <ISO timestamp>
 > Current phase: <phase number and name>
@@ -84,10 +84,10 @@ Each file has a strict shape and a strict update cadence. Strictness is the poin
 
 <Ordered list of the 3-5 most relevant files for picking up the work.>
 
-1. `NEXT.md` — concrete next actions
-2. `plan/01-architecture.md` — current architectural shape
-3. `decisions/README.md` — ADR index
-4. `research/sqlite-as-queue.md` — most recent research
+1. `NEXT.md` - concrete next actions
+2. `plan/01-architecture.md` - current architectural shape
+3. `decisions/README.md` - ADR index
+4. `research/sqlite-as-queue.md` - most recent research
 
 ## Pointer to next action
 
@@ -96,7 +96,7 @@ Each file has a strict shape and a strict update cadence. Strictness is the poin
 
 ---
 
-## `NEXT.md` — concrete next actions
+## `NEXT.md` - concrete next actions
 
 **Purpose**: imperative bullets a resuming Claude can execute immediately. No prose, no meta-commentary, no philosophy. Just "do these things."
 
@@ -107,7 +107,7 @@ Each file has a strict shape and a strict update cadence. Strictness is the poin
 ### Template
 
 ```markdown
-# NEXT — <project name>
+# NEXT - <project name>
 
 > Updated: <ISO timestamp>
 > If you are a fresh Claude resuming this project, do these in order.
@@ -122,8 +122,8 @@ Each file has a strict shape and a strict update cadence. Strictness is the poin
 
 ## Blocked / cannot proceed without
 
-- ADR-004 (PyMuPDF vs pdftext) — needs user confirmation on shareability
-- Phase 5 action point template — wait until pipelines are drafted
+- ADR-004 (PyMuPDF vs pdftext) - needs user confirmation on shareability
+- Phase 5 action point template - wait until pipelines are drafted
 
 ## Already done (do not redo)
 
@@ -132,11 +132,11 @@ Each file has a strict shape and a strict update cadence. Strictness is the poin
 - Phase 2 vision and architecture (`plan/00-vision.md`, `plan/01-architecture.md`)
 ```
 
-The "Already done" section is critical. Without it, a resuming Claude will re-do completed work to "make sure" — a documented LLM failure mode.
+The "Already done" section is critical. Without it, a resuming Claude will re-do completed work to "make sure" - a documented LLM failure mode.
 
 ---
 
-## `journal.md` — append-only session history
+## `journal.md` - append-only session history
 
 **Purpose**: one entry per session, in chronological order. Lets a resuming Claude see *what changed* and *when* and *why*, not just *what exists*.
 
@@ -149,7 +149,7 @@ The "Already done" section is critical. Without it, a resuming Claude will re-do
 ```markdown
 ## Session 2026-04-08T14:30Z
 
-**Goal**: Start Phase 2 — vision and architecture
+**Goal**: Start Phase 2 - vision and architecture
 **Outcome**: Vision file complete; architecture file complete with 6 grounded decisions
 
 **Did**:
@@ -169,7 +169,7 @@ The "Already done" section is critical. Without it, a resuming Claude will re-do
 - ADR-006: Markdown files as the index (driven by user "greppable" requirement)
 
 **Did not do** (deferred):
-- `plan/02-pipelines.md` — next session
+- `plan/02-pipelines.md` - next session
 - Phases 3-7
 
 **Blockers raised**:
@@ -184,9 +184,9 @@ A resuming Claude can `tail -n 50 journal.md` and immediately see the last sessi
 
 ---
 
-## `decisions/` — append-only ADR log (MADR format)
+## `decisions/` - append-only ADR log (MADR format)
 
-**Purpose**: every architecturally significant decision gets one short, focused, sequentially-numbered file. The decision survives indefinitely. If a later decision overrides it, the old one stays and gets a `Superseded by ADR-NNN` status — never deleted.
+**Purpose**: every architecturally significant decision gets one short, focused, sequentially-numbered file. The decision survives indefinitely. If a later decision overrides it, the old one stays and gets a `Superseded by ADR-NNN` status - never deleted.
 
 **Update cadence**: a new ADR file per decision, written when the decision is made. Existing ADRs are only edited to update status (Proposed → Accepted → Deprecated → Superseded).
 
@@ -197,12 +197,12 @@ A resuming Claude can `tail -n 50 journal.md` and immediately see the last sessi
 ### Single ADR template
 
 ```markdown
-# ADR-NNN: <Short title — the decision, not the problem>
+# ADR-NNN: <Short title - the decision, not the problem>
 
 **Status**: Proposed | Accepted | Deprecated | Superseded by ADR-NNN
 **Date**: <ISO date>
 **Deciders**: <user name(s) or "user + claude">
-**Phase**: <which blueprint phase this came from, e.g. "Phase 2 — architecture">
+**Phase**: <which blueprint phase this came from, e.g. "Phase 2 - architecture">
 
 ## Context
 
@@ -243,7 +243,7 @@ A resuming Claude can `tail -n 50 journal.md` and immediately see the last sessi
 **Status**: Accepted
 **Date**: 2026-04-08
 **Deciders**: user + claude
-**Phase**: Phase 2 — architecture
+**Phase**: Phase 2 - architecture
 
 ## Context
 
@@ -263,7 +263,7 @@ Use a SQLite database at `~/.pdf-watch/queue.db` with `journal_mode=WAL`, `busy_
 ## Consequences
 
 **Positive**:
-- Crash recovery is automatic — workers pick up incomplete rows on next start
+- Crash recovery is automatic - workers pick up incomplete rows on next start
 - Inspectable with the `sqlite3` CLI for debugging
 - One file, no daemon
 
@@ -282,12 +282,12 @@ Use a SQLite database at `~/.pdf-watch/queue.db` with `journal_mode=WAL`, `busy_
 - <https://www.bugsink.com/blog/snappea-design/>
 ```
 
-### `decisions/README.md` — the ADR index
+### `decisions/README.md` - the ADR index
 
 Auto-maintained. Lists every ADR by number, title, status, and date. Updated whenever an ADR is added or its status changes.
 
 ```markdown
-# Decision log — <project name>
+# Decision log - <project name>
 
 > Append-only. Decisions live forever. Status changes when a decision is overridden.
 
@@ -302,10 +302,10 @@ Auto-maintained. Lists every ADR by number, title, status, and date. Updated whe
 
 ## Status legend
 
-- **Proposed** — under discussion, not yet committed
-- **Accepted** — committed; the architecture file reflects this decision
-- **Deprecated** — no longer applicable; kept for history
-- **Superseded by ADR-NNN** — replaced by a later decision
+- **Proposed** - under discussion, not yet committed
+- **Accepted** - committed; the architecture file reflects this decision
+- **Deprecated** - no longer applicable; kept for history
+- **Superseded by ADR-NNN** - replaced by a later decision
 ```
 
 ### When to write an ADR (and when not to)
@@ -318,22 +318,22 @@ Rule of thumb: **if Phase 2 architecture lists a "Chosen" alternative, that's pr
 
 ---
 
-## The resume protocol — read order
+## The resume protocol - read order
 
 When Claude is invoked on a directory containing a `blueprint/` workspace, or when the user says "where did we leave off" or "continue this plan", Claude reads in this order. **No ad-hoc exploration.** No loading the entire `plan/` tree into context.
 
 ### Step 1: orient (always reads, always small)
 
-1. `blueprint/SESSION.md` — current state, ~50 lines max
-2. `blueprint/NEXT.md` — concrete next actions, ~30 lines max
-3. `blueprint/index.md` — file map with coverage tags
+1. `blueprint/SESSION.md` - current state, ~50 lines max
+2. `blueprint/NEXT.md` - concrete next actions, ~30 lines max
+3. `blueprint/index.md` - file map with coverage tags
 
 After these three reads, Claude says one sentence to the user: *"You're in Phase 2 of the pdf-watch project. Last session ended after writing the architecture file and 6 ADRs. Next is `plan/02-pipelines.md`. Want me to start, or has anything changed since you last worked on this?"*
 
 ### Step 2: status check (always reads, still small)
 
-4. `blueprint/decisions/README.md` — ADR index, status of every decision
-5. `tail -n 80 blueprint/journal.md` — last 1-2 session entries
+4. `blueprint/decisions/README.md` - ADR index, status of every decision
+5. `tail -n 80 blueprint/journal.md` - last 1-2 session entries
 
 Now Claude knows: every decision and its status, what the last session actually did, what was deferred, what was blocked.
 
@@ -341,7 +341,7 @@ Now Claude knows: every decision and its status, what the last session actually 
 
 6. Whatever specific files `NEXT.md` says to read for the next action.
 7. Whatever `decisions/README.md` flags as relevant to the next action.
-8. Whatever `index.md` marks `[L]` (low coverage — check the raw file) for the next action.
+8. Whatever `index.md` marks `[L]` (low coverage - check the raw file) for the next action.
 
 Crucially: do **not** load Phase 1 research files unless the next action involves research. Do **not** load `plan/00-vision.md` if you're doing Phase 5 action points and the vision is unchanged. Progressive disclosure all the way down.
 
@@ -357,10 +357,10 @@ This restatement is the proposer-validator separation applied to resumption: the
 
 Before the user runs `/clear` (or before the chat dies of natural causes), do this in order:
 
-1. **Append a journal entry** — one entry per session, format above.
-2. **Write any new ADRs** — for every architectural decision made this session. Update `decisions/README.md` index.
-3. **Rewrite `SESSION.md`** — current state, current phase, what was just done, blockers.
-4. **Rewrite `NEXT.md`** — imperative next actions for whoever (probably future-you) resumes.
+1. **Append a journal entry** - one entry per session, format above.
+2. **Write any new ADRs** - for every architectural decision made this session. Update `decisions/README.md` index.
+3. **Rewrite `SESSION.md`** - current state, current phase, what was just done, blockers.
+4. **Rewrite `NEXT.md`** - imperative next actions for whoever (probably future-you) resumes.
 5. **Update `index.md` coverage tags** if any file's coverage changed.
 6. **Tell the user**: *"Workspace persisted. Safe to /clear. Resume by saying 'where did we leave off'."*
 
@@ -397,7 +397,7 @@ Now every resumed session starts with `SESSION.md` and `NEXT.md` already in cont
 | Failure mode | Prevention |
 |---|---|
 | Resuming Claude redoes Phase 1 research because it doesn't know it's done | `NEXT.md` "Already done" section + `journal.md` history |
-| A decision made in session 1 gets silently re-litigated in session 3 | `decisions/` ADR with `Accepted` status — re-opening requires explicit `Superseded by` |
+| A decision made in session 1 gets silently re-litigated in session 3 | `decisions/` ADR with `Accepted` status - re-opening requires explicit `Superseded by` |
 | User says "where were we" and Claude reads 30 files into context | Resume protocol forbids this; only 5 small files in Step 1+2 |
 | Phase 2 architecture file no longer matches the actual decisions | ADR index status lifecycle catches this on the lint pass |
 | Two parallel sessions diverge and neither knows about the other's work | Append-only `journal.md` makes divergence visible on next merge |

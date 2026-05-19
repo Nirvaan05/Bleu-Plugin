@@ -1,6 +1,6 @@
 # Handoff Formats
 
-This file is read in Phase 7, after the user locks in the blueprint. Its job: convert the wiki into something an executor (GSD, Superpowers, or raw Claude Code) can run with, and — when possible — invoke that executor directly.
+This file is read in Phase 7, after the user locks in the blueprint. Its job: convert the wiki into something an executor (GSD, Superpowers, or raw Claude Code) can run with, and - when possible - invoke that executor directly.
 
 ## The grounding rule (read first)
 
@@ -8,7 +8,7 @@ The blueprint is the source of truth. The handoff artifact is a **doorway**, not
 
 - Reference blueprint files by relative path (`@blueprint/plan/01-architecture.md`) so the executor opens them.
 - Contain a tight summary of intent, scope, stack, and the AP execution order.
-- **Not** paraphrase the entire blueprint into one giant prompt — that re-introduces the failure mode the wiki was built to avoid.
+- **Not** paraphrase the entire blueprint into one giant prompt - that re-introduces the failure mode the wiki was built to avoid.
 
 If the executor is Claude-based, it can read the linked files. Trust that and keep the handoff lean.
 
@@ -37,7 +37,7 @@ The mapping is tight enough that the bleu can directly produce the inputs Spec K
 
 **Other SDD frameworks the user may know**:
 
-- **Kiro IDE** (AWS): three documents — `requirements.md` → `design.md` → `tasks.md` — plus a "steering" memory bank (`product.md`, `structure.md`, `tech.md`). Maps cleanly: requirements ≈ vision, design ≈ architecture+components, tasks ≈ action points, steering ≈ schema rules.
+- **Kiro IDE** (AWS): three documents - `requirements.md` → `design.md` → `tasks.md` - plus a "steering" memory bank (`product.md`, `structure.md`, `tech.md`). Maps cleanly: requirements ≈ vision, design ≈ architecture+components, tasks ≈ action points, steering ≈ schema rules.
 - **BMAD-METHOD**: six-agent personas (Analyst, Project Manager, Architect, Developer, QA, Orchestrator) with file-based handoffs. Substantially heavier; best for greenfield projects with significant upfront planning value. The blueprint can feed BMAD's Architect role directly.
 - **Conductor plugin** (in `wshobson/agents`): Context → Spec & Plan → Implement workflow. Same shape as the bleu, repackaged as a Claude Code plugin.
 
@@ -45,13 +45,13 @@ The mapping is tight enough that the bleu can directly produce the inputs Spec K
 
 Augment Code's evaluation of six SDD tools surfaced an important distinction: **living-spec platforms** (Intent, Augment Code) keep documentation synchronized with code as agents work, while **static-spec tools** (Spec Kit, BMAD, Kiro) structure requirements upfront but require manual reconciliation when implementation diverges.
 
-The blueprint **should be living**. When a Curator cycle changes a plan file, the index updates. When the Linter finds a contradiction, it surfaces. When implementation diverges from the plan during Phase 7+, the user updates the blueprint or the Curator does. The coverage tags (`[H]/[M]/[L]`) from `references/knowledge-base-pattern.md` make the staleness visible. **A static blueprint that drifts from the codebase is the failure mode** — Martin Fowler's review of Spec Kit specifically called this out: "Specs and code can fall out of sync. In early reports, specs are relatively static documents."
+The blueprint **should be living**. When a Curator cycle changes a plan file, the index updates. When the Linter finds a contradiction, it surfaces. When implementation diverges from the plan during Phase 7+, the user updates the blueprint or the Curator does. The coverage tags (`[H]/[M]/[L]`) from `references/knowledge-base-pattern.md` make the staleness visible. **A static blueprint that drifts from the codebase is the failure mode** - Martin Fowler's review of Spec Kit specifically called this out: "Specs and code can fall out of sync. In early reports, specs are relatively static documents."
 
 ### The "sledgehammer for a nut" failure mode
 
-Martin Fowler's review of Kiro found that asking it to fix a small bug produced "4 user stories with 16 acceptance criteria, including gems like 'User story: As a developer, I want the transformation function to handle edge cases gracefully.'" — a clear sledgehammer-for-a-nut failure.
+Martin Fowler's review of Kiro found that asking it to fix a small bug produced "4 user stories with 16 acceptance criteria, including gems like 'User story: As a developer, I want the transformation function to handle edge cases gracefully.'" - a clear sledgehammer-for-a-nut failure.
 
-The bleu can fall into the same trap. The `~38 action points` target is **a granularity guideline, not a quota**. A one-day refactor doesn't need a 38-AP blueprint. The Phase 0 intake is where you size the workflow to the project — if the user's idea is "add a debounce to this input," you don't run the full workflow. You write a one-paragraph plan and hand it off directly. Don't sledgehammer.
+The bleu can fall into the same trap. The `~38 action points` target is **a granularity guideline, not a quota**. A one-day refactor doesn't need a 38-AP blueprint. The Phase 0 intake is where you size the workflow to the project - if the user's idea is "add a debounce to this input," you don't run the full workflow. You write a one-paragraph plan and hand it off directly. Don't sledgehammer.
 
 ### The safe delegation window framing
 
@@ -69,9 +69,9 @@ GSD's flow is: interview → research → requirements → roadmap → plan → 
 
 **Choose the right entry point:**
 
-- `/gsd:new-project` — for a greenfield system. Use this when the blueprint is for an entirely new codebase.
-- `/gsd:new-milestone` — for a major feature inside an existing project.
-- `/gsd:quick` — for a smaller scope where the full spec-driven flow is overkill.
+- `/gsd:new-project` - for a greenfield system. Use this when the blueprint is for an entirely new codebase.
+- `/gsd:new-milestone` - for a major feature inside an existing project.
+- `/gsd:quick` - for a smaller scope where the full spec-driven flow is overkill.
 
 **Artifact: `blueprint/handoff/gsd.md`**
 
@@ -79,7 +79,7 @@ GSD's flow is: interview → research → requirements → roadmap → plan → 
 # <Project / milestone name>
 
 ## What I'm building
-<2–4 sentences from plan/00-vision.md — problem + solution + business context.>
+<2–4 sentences from plan/00-vision.md - problem + solution + business context.>
 
 ## Technical environment
 - Stack: <from plan/01-architecture.md>
@@ -102,11 +102,11 @@ GSD should plan its roadmap from that file.
 
 ## Research already done
 <List of research/*.md files with one-line summaries. Saves GSD a research cycle.>
-- @blueprint/research/<topic-1>.md — <conclusion>
-- @blueprint/research/<topic-2>.md — <conclusion>
+- @blueprint/research/<topic-1>.md - <conclusion>
+- @blueprint/research/<topic-2>.md - <conclusion>
 
 ## Open questions accepted by the user
-<From plan/07-risks-open-questions.md — items the user explicitly accepted to
+<From plan/07-risks-open-questions.md - items the user explicitly accepted to
 defer rather than resolve. GSD should not re-ask these.>
 
 ## Pointer
@@ -125,18 +125,18 @@ If yes, invoke the appropriate slash command and pass the file contents as the i
 
 ## Target 2: Superpowers
 
-Superpowers' flow is: brainstorming → planning → TDD → subagent execution → code review. The brainstorming phase uses Socratic questioning to refine intent — but it goes much deeper when the intent already has substance and the design considerations are pre-surfaced.
+Superpowers' flow is: brainstorming → planning → TDD → subagent execution → code review. The brainstorming phase uses Socratic questioning to refine intent - but it goes much deeper when the intent already has substance and the design considerations are pre-surfaced.
 
 **Choose the right entry point:**
 
-- `/superpowers:brainstorm` (or `/brainstorm`) — for new features where some refinement is still welcome.
-- Direct planning — when the blueprint is so locked-in that brainstorming would just rehash it. In that case, hand the artifact to the planning phase directly.
+- `/superpowers:brainstorm` (or `/brainstorm`) - for new features where some refinement is still welcome.
+- Direct planning - when the blueprint is so locked-in that brainstorming would just rehash it. In that case, hand the artifact to the planning phase directly.
 
 **Artifact: `blueprint/handoff/superpowers.md`**
 
 ```markdown
 # Feature intent
-<From plan/00-vision.md — rich enough that brainstorming refines rather than extracts.>
+<From plan/00-vision.md - rich enough that brainstorming refines rather than extracts.>
 
 # Technical context
 - Stack: <from plan/01-architecture.md>
@@ -147,10 +147,10 @@ Superpowers' flow is: brainstorming → planning → TDD → subagent execution 
 
 # Design considerations (lenses already applied)
 The blueprint already covers:
-- **Architecture** — @blueprint/plan/01-architecture.md
-- **Pipelines** — @blueprint/plan/02-pipelines.md
-- **Security / perf / observability** — @blueprint/plan/06-non-functional.md
-- **Edge cases** — distributed across @blueprint/action-points/AP-*.md
+- **Architecture** - @blueprint/plan/01-architecture.md
+- **Pipelines** - @blueprint/plan/02-pipelines.md
+- **Security / perf / observability** - @blueprint/plan/06-non-functional.md
+- **Edge cases** - distributed across @blueprint/action-points/AP-*.md
 
 This means the brainstorming phase can focus on refining intent rather than
 discovering structure from scratch.
@@ -160,7 +160,7 @@ discovering structure from scratch.
 - Edge cases: <from action points; each AP lists its own>
 - Error cases: <from plan/06-non-functional.md and per-component failure modes>
 
-Each action point in @blueprint/action-points/ has its own verification block —
+Each action point in @blueprint/action-points/ has its own verification block -
 TDD red phase should derive from those.
 
 # Execution plan
@@ -177,7 +177,7 @@ re-decomposing.
 
 # Research findings
 <List of research/*.md files. Gives brainstorming/planning expert context.>
-- @blueprint/research/<topic-1>.md — <conclusion>
+- @blueprint/research/<topic-1>.md - <conclusion>
 
 # Pointer
 Full blueprint at @blueprint/. README.md → index.md → plan/ → action-points/.
@@ -213,10 +213,10 @@ for each step.
 <Numbered list, topologically sorted from action-points/README.md. Mark
 parallelizable groups. Each item links to its AP file.>
 
-1. AP-01 — Bootstrap repo (S) — @blueprint/action-points/AP-01-bootstrap-repo.md
-2. AP-02 — Auth token model (M) — @blueprint/action-points/AP-02-auth-token-model.md
+1. AP-01 - Bootstrap repo (S) - @blueprint/action-points/AP-01-bootstrap-repo.md
+2. AP-02 - Auth token model (M) - @blueprint/action-points/AP-02-auth-token-model.md
    - Can run in parallel with AP-03.
-3. AP-03 — DB schema initial migration (S) — @blueprint/action-points/AP-03-...
+3. AP-03 - DB schema initial migration (S) - @blueprint/action-points/AP-03-...
 ...
 
 ## How to execute one AP
@@ -225,10 +225,10 @@ For each AP:
 2. Implement following the "Code flow" and "Files involved" sections exactly.
 3. Run the checks in the "Verification" section.
 4. If anything in the AP turns out to be wrong, update the AP file *before*
-   moving on. The blueprint is the source of truth — keep it accurate.
+   moving on. The blueprint is the source of truth - keep it accurate.
 
 ## When you hit something not in the blueprint
-Stop. Surface it. Don't improvise — improvising breaks the
+Stop. Surface it. Don't improvise - improvising breaks the
 expected-vs-actual mismatch detection that the blueprint exists to provide.
 ```
 
@@ -240,7 +240,7 @@ expected-vs-actual mismatch detection that the blueprint exists to provide.
 
 For users who don't want a wrapper artifact at all and just want the execution sequence.
 
-**Artifact:** the contents of `blueprint/action-points/README.md` (which already has the ordered list and dependency graph). No new file needed — point them at it.
+**Artifact:** the contents of `blueprint/action-points/README.md` (which already has the ordered list and dependency graph). No new file needed - point them at it.
 
 ---
 
@@ -251,12 +251,12 @@ GitHub Spec Kit is the open-source CLI for spec-driven development (Constitution
 Use Spec Kit as the handoff target when:
 
 - The user already has Spec Kit installed (`uvx specify` works).
-- The user wants the cross-tool portability — they may switch between Claude Code, Cursor, and Codex during execution.
+- The user wants the cross-tool portability - they may switch between Claude Code, Cursor, and Codex during execution.
 - The team already standardizes on Spec Kit's slash commands and the user wants the blueprint to feed into that existing workflow.
 
 **Artifact: `blueprint/handoff/spec-kit.md`**
 
-The blueprint produces three Spec Kit-compatible documents from existing files. You don't need to rewrite them — just copy the right files to the right Spec Kit paths and tell the user to run `/specify`, `/plan`, `/tasks` against them.
+The blueprint produces three Spec Kit-compatible documents from existing files. You don't need to rewrite them - just copy the right files to the right Spec Kit paths and tell the user to run `/specify`, `/plan`, `/tasks` against them.
 
 ```markdown
 # Spec Kit handoff for <project name>

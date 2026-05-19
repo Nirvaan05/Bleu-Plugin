@@ -1,8 +1,13 @@
-# Bleu
+# Bleu - a Claude Code plugin for living blueprints
 
 > Turn an idea into a deeply structured, file-backed system plan **before** writing any code.
 
-A Claude Code skill that grows your idea into a navigable markdown wiki: vision, architecture, components, action points, research, citations, ADRs, and a session-persistence layer that survives `/clear`.
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-cfe8ff?style=flat-square)](https://docs.claude.com/en/docs/claude-code/plugins)
+[![Install](https://img.shields.io/badge/install-/plugin%20install%20bleu-0066cc?style=flat-square)](#install)
+[![Spec-driven](https://img.shields.io/badge/workflow-spec--driven-d4f5d4?style=flat-square)](#the-phased-workflow)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
+
+**Bleu is a planning plugin for [Anthropic's Claude Code](https://docs.claude.com/en/docs/claude-code).** It grows your idea into a navigable markdown wiki - vision, architecture, components, action points, research, citations, ADRs - with a session-persistence layer that survives `/clear`. The blueprint is the source of truth; the Claude Code plugin hands it off cleanly to [GSD](https://github.com/gsd-build/get-shit-done), [Superpowers](https://github.com/obra/superpowers), or raw Claude Code when it's time to execute.
 
 ```mermaid
 flowchart LR

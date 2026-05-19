@@ -3,12 +3,12 @@
   "owner": {
     "name": "Nirvaan Lagishetty"
   },
-  "description": "Bleu — a planning skill for turning ideas into deeply structured, file-backed system blueprints.",
+  "description": "Bleu - Claude Code plugin for living blueprints. Turns ideas into a file-backed markdown wiki (vision, architecture, ADRs, action points) that survives /clear and hands off to GSD or Superpowers.",
   "plugins": [
     {
       "name": "bleu",
       "source": "./plugins/bleu",
-      "description": "Turn an idea into a deeply structured, lint-passing, file-backed system plan before writing any code.",
+      "description": "Claude Code plugin for living blueprints. Turn an idea into a deeply structured, lint-passing, file-backed system plan before writing any code.",
       "version": "1.0.0",
       "license": "MIT",
       "author": {
@@ -17,7 +17,24 @@
       "homepage": "https://github.com/Nirvaan05/Bleu-plugin",
       "repository": "https://github.com/Nirvaan05/Bleu-plugin",
       "category": "planning",
-      "tags": ["planning", "architecture", "knowledge-base", "spec-driven", "system-design"]
+      "tags": [
+        "claude-code",
+        "claude-code-plugin",
+        "claude-code-skill",
+        "claude-skills",
+        "anthropic",
+        "agent-skills",
+        "subagents",
+        "spec-driven",
+        "spec-driven-development",
+        "planning",
+        "blueprint",
+        "architecture",
+        "knowledge-base",
+        "wiki",
+        "adr",
+        "system-design"
+      ]
     }
   ]
 }

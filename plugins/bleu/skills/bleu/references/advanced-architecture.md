@@ -1,20 +1,20 @@
 # Advanced Architecture
 
-This file is read when the user wants the blueprint workspace to be more than a static markdown wiki — when they want a **living, self-improving system** with multi-agent collaboration, structured memory layers, schema-enforced rules, multimodal ingest, observability, and external integrations.
+This file is read when the user wants the blueprint workspace to be more than a static markdown wiki - when they want a **living, self-improving system** with multi-agent collaboration, structured memory layers, schema-enforced rules, multimodal ingest, observability, and external integrations.
 
-Everything here is **opt-in**. The base skill (Phases 0–7 in SKILL.md, with the file-only workflow) is fully usable on its own. The capabilities below are upgrades, layered on as the user wants them. Offer them as a menu — never install silently.
+Everything here is **opt-in**. The base skill (Phases 0–7 in SKILL.md, with the file-only workflow) is fully usable on its own. The capabilities below are upgrades, layered on as the user wants them. Offer them as a menu - never install silently.
 
 The capabilities cluster into seven groups, in rough order of how often they're worth turning on:
 
-1. The reflection loop — self-improving memory with an auditor
-2. Structure layers — knowledge graph + episodic/semantic split
-3. The agent team — multi-agent collaboration beyond the KB Curator
-4. Schema-as-code — symbolic rules the linter enforces
+1. The reflection loop - self-improving memory with an auditor
+2. Structure layers - knowledge graph + episodic/semantic split
+3. The agent team - multi-agent collaboration beyond the KB Curator
+4. Schema-as-code - symbolic rules the linter enforces
 5. Multimodal ingest and derived outputs
-6. Observability — wiki health score and telemetry
-7. External integrations — MCPs for GitHub, Linear, meetings, web
+6. Observability - wiki health score and telemetry
+7. External integrations - MCPs for GitHub, Linear, meetings, web
 
-Handoff modes (GSD / Superpowers / raw Claude Code / AP list) are documented separately in `handoff-formats.md` — cross-reference that file rather than duplicating it.
+Handoff modes (GSD / Superpowers / raw Claude Code / AP list) are documented separately in `handoff-formats.md` - cross-reference that file rather than duplicating it.
 
 ---
 
@@ -47,20 +47,20 @@ This is the "schema you steer" idea made operational. The human rarely edits the
 
 After each major phase (or on demand), the Reflector reads `blueprint/` and nominates:
 
-- **New rules** — patterns it sees repeating that should be codified ("every component file has a Failure Modes section — make it required").
-- **New connections** — entities mentioned in multiple files that aren't cross-linked yet ("`auth-service` and `audit-logger` both reference `token.issued` events — add bidirectional links").
-- **Rule violations** — places where the wiki doesn't match its own existing rules ("AP-12 has no Verification section, which violates schema rule R-04").
-- **Promotion candidates** — raw notes in `raw/` that have stabilized enough to compile into `plan/` or `research/`.
-- **Demotion candidates** — plan content that the user has overruled in conversation but never updated in the file.
-- **Context engineering failure modes** — the four named patterns from Anthropic and Weaviate's context engineering writeups, specifically translated to the wiki:
-  - **Context Poisoning** — incorrect or hallucinated info has entered the wiki and is now propagating ("AP-07 cites a function signature that doesn't exist in the codebase; AP-12 inherited the wrong signature from AP-07"). Highest severity — these compound.
-  - **Context Distraction** — the wiki has accumulated so much past detail that the actual decisions are buried under noise ("plan/03-components/auth-service.md has 14 sections but the core responsibility is one paragraph; new readers can't find it"). Medium severity — propose summarization.
-  - **Context Clash** — two files describe the same thing in contradictory ways ("plan/02-pipelines.md says the ingest worker is idempotent; plan/03-components/ingest-worker.md says it isn't"). High severity — must reconcile.
-  - **Context Anxiety** (architectural variant) — the plan is over-scoped relative to the user's actual goal, hedging against scenarios that won't happen ("the data model has fields for multi-tenancy but the user explicitly said single-tenant"). Medium severity — propose pruning.
+- **New rules** - patterns it sees repeating that should be codified ("every component file has a Failure Modes section - make it required").
+- **New connections** - entities mentioned in multiple files that aren't cross-linked yet ("`auth-service` and `audit-logger` both reference `token.issued` events - add bidirectional links").
+- **Rule violations** - places where the wiki doesn't match its own existing rules ("AP-12 has no Verification section, which violates schema rule R-04").
+- **Promotion candidates** - raw notes in `raw/` that have stabilized enough to compile into `plan/` or `research/`.
+- **Demotion candidates** - plan content that the user has overruled in conversation but never updated in the file.
+- **Context engineering failure modes** - the four named patterns from Anthropic and Weaviate's context engineering writeups, specifically translated to the wiki:
+  - **Context Poisoning** - incorrect or hallucinated info has entered the wiki and is now propagating ("AP-07 cites a function signature that doesn't exist in the codebase; AP-12 inherited the wrong signature from AP-07"). Highest severity - these compound.
+  - **Context Distraction** - the wiki has accumulated so much past detail that the actual decisions are buried under noise ("plan/03-components/auth-service.md has 14 sections but the core responsibility is one paragraph; new readers can't find it"). Medium severity - propose summarization.
+  - **Context Clash** - two files describe the same thing in contradictory ways ("plan/02-pipelines.md says the ingest worker is idempotent; plan/03-components/ingest-worker.md says it isn't"). High severity - must reconcile.
+  - **Context Anxiety** (architectural variant) - the plan is over-scoped relative to the user's actual goal, hedging against scenarios that won't happen ("the data model has fields for multi-tenancy but the user explicitly said single-tenant"). Medium severity - propose pruning.
 
   These four are the same failure modes Anthropic's context engineering posts identify for *runtime* agents, but they apply equally to a static planning artifact. The Reflector is the linter for them.
 
-Nominations go to `blueprint/.reflection/proposals/<timestamp>-<slug>.md` — one file per proposal — using this format:
+Nominations go to `blueprint/.reflection/proposals/<timestamp>-<slug>.md` - one file per proposal - using this format:
 
 ```markdown
 # Proposal: <short title>
@@ -86,9 +86,9 @@ should appear in schema/rules.md.>
 <What stays broken. Also honest.>
 ```
 
-### The Auditor — implemented as an agent hook
+### The Auditor - implemented as an agent hook
 
-The Auditor's only job is to validate proposals. It's a separate concern from the Reflector (or the KB Curator) so the proposer-validator distinction is preserved — you don't want the same agent both proposing and approving its own changes.
+The Auditor's only job is to validate proposals. It's a separate concern from the Reflector (or the KB Curator) so the proposer-validator distinction is preserved - you don't want the same agent both proposing and approving its own changes.
 
 The cleanest implementation is an **`agent` hook** on `SubagentStop` of the kb-linter, not a manually invoked subagent. When the linter finishes writing proposals, the agent hook fires automatically, spawns a verifier with read-only tools (Read, Grep, Glob), passes it the proposals, and returns approve/reject/escalate. No file-passing dance, no separate invocation.
 
@@ -113,11 +113,11 @@ In `.claude/settings.json`:
 }
 ```
 
-The agent hook spawns a subagent automatically with a default tool set scoped to verification. You don't need a separate `.claude/agents/kb-auditor.md` file — the hook handles spawning. If you do want a named agent for explicit invocation as well, you can create one in addition.
+The agent hook spawns a subagent automatically with a default tool set scoped to verification. You don't need a separate `.claude/agents/kb-auditor.md` file - the hook handles spawning. If you do want a named agent for explicit invocation as well, you can create one in addition.
 
 ### Why agent hooks for this
 
-The previous version of this file had the Auditor as a manually invoked subagent with a file-passing protocol (`.reflection/pending-lint` markers, etc.). That worked but required either a hook to trigger the Auditor or the user to remember to invoke it. With agent hooks, the auditor fires automatically the moment the linter finishes — no orchestration code, no marker files, no user attention.
+The previous version of this file had the Auditor as a manually invoked subagent with a file-passing protocol (`.reflection/pending-lint` markers, etc.). That worked but required either a hook to trigger the Auditor or the user to remember to invoke it. With agent hooks, the auditor fires automatically the moment the linter finishes - no orchestration code, no marker files, no user attention.
 
 Agent hooks are supported on `PermissionRequest`, `PostToolUse`, `PostToolUseFailure`, `PreToolUse`, `Stop`, `SubagentStop`, `TaskCompleted`, `TaskCreated`, and `UserPromptSubmit`. The auditor pattern uses `SubagentStop` matched on the linter's name.
 
@@ -131,9 +131,9 @@ The Reflector itself is the kb-linter subagent (see "The agent team" section bel
 
 For the bleu, this means: **the Reflector should ideally run during the user's idle time, not in their session**. Three options in order of preference:
 
-1. **Scheduled task** (Claude Code's `scheduled-tasks` feature, or a cron job calling `claude -p`) — fires at midnight or whenever the user isn't working.
-2. **Stop hook with a counter** — every Nth Stop event (default: 5), the Reflector runs. Cheap, but adds latency to one in N user sessions.
-3. **On demand** — `@kb-linter run a reflection pass`. Pure manual, no surprise.
+1. **Scheduled task** (Claude Code's `scheduled-tasks` feature, or a cron job calling `claude -p`) - fires at midnight or whenever the user isn't working.
+2. **Stop hook with a counter** - every Nth Stop event (default: 5), the Reflector runs. Cheap, but adds latency to one in N user sessions.
+3. **On demand** - `@kb-linter run a reflection pass`. Pure manual, no surprise.
 
 Choose #1 if the user has Claude Code's scheduling enabled. #2 is a reasonable fallback. #3 is the always-available baseline.
 
@@ -149,7 +149,7 @@ When the linter finishes, the agent-hook auditor takes over automatically. Escal
 
 Anthropic's January 2026 harness post documents the canonical reason for keeping the proposer (Reflector) separate from the validator (Auditor):
 
-> "When asked to evaluate work they've produced, agents tend to respond by confidently praising the work — even when, to a human observer, the quality is obviously mediocre. This problem is particularly pronounced for subjective tasks like design, where there is no binary check equivalent to a verifiable software test."
+> "When asked to evaluate work they've produced, agents tend to respond by confidently praising the work - even when, to a human observer, the quality is obviously mediocre. This problem is particularly pronounced for subjective tasks like design, where there is no binary check equivalent to a verifiable software test."
 
 This is the same finding that emerged independently in Galileo's production data: "AI agents testing AI agents architectures with separate evaluator models consistently outperform single-model self-correction approaches." RAG-augmented verification achieves 0.76-0.92 AUROC for hallucination detection; internal consistency checks fail against plausible-but-incorrect content.
 
@@ -159,7 +159,7 @@ The architectural implication is direct: **the agent that wrote the proposal mus
 - The **Auditor** reads proposals and writes verdicts to `.reflection/verdicts/`. It cannot write proposals.
 - These are different agents (or, equivalently, the same harness with different prompts and disjoint write permissions).
 
-For frontend design tasks, Anthropic's evaluator agent uses Playwright MCP to actually navigate live pages and interact with the running interface — not just code review, but functional testing. The blueprint analog is the Auditor reading the actual files referenced by a proposal, not just trusting the proposal's summary.
+For frontend design tasks, Anthropic's evaluator agent uses Playwright MCP to actually navigate live pages and interact with the running interface - not just code review, but functional testing. The blueprint analog is the Auditor reading the actual files referenced by a proposal, not just trusting the proposal's summary.
 
 The same pattern shows up in three independent strands of frontliner research:
 
@@ -169,7 +169,7 @@ The same pattern shows up in three independent strands of frontliner research:
 
 If the user pushes back and asks "why can't the Curator just lint its own work?", the answer is this section. Self-evaluation is a documented production failure mode, not an aesthetic preference.
 
-### Reflection vs Reflexion — the distinction matters
+### Reflection vs Reflexion - the distinction matters
 
 These get conflated in casual usage, but the difference is meaningful:
 
@@ -180,10 +180,10 @@ The bleu's reflection loop is **closer to Reflexion** because the Auditor's verd
 
 **Risks of Reflexion-style memory** that the production literature has documented and that this skill must mitigate:
 
-- **Memory bloat** — the rules file grows unboundedly. *Mitigation*: every rule has a `status: active|deprecated` field and the Linter retires unused rules during the lint pass.
-- **Enshrined mistakes** — bad lessons get promoted to permanent rules. *Mitigation*: the Auditor's escalate-to-human path for any rule that touches architecture, data model, or AP dependency graph.
-- **Drift** — rules slowly stop matching the actual blueprint. *Mitigation*: the wiki health score (section 6) tracks rule violation density over time; spikes surface in `SessionStart`.
-- **Local-minima trap** — Reflexion is documented to struggle with tasks requiring creative escape. From the original paper: WebShop benchmark, four trials, no improvement, agent gives up. *Mitigation*: the human is in the loop for proposals that touch architecture; creative escapes are explicitly the human's job, not the loop's.
+- **Memory bloat** - the rules file grows unboundedly. *Mitigation*: every rule has a `status: active|deprecated` field and the Linter retires unused rules during the lint pass.
+- **Enshrined mistakes** - bad lessons get promoted to permanent rules. *Mitigation*: the Auditor's escalate-to-human path for any rule that touches architecture, data model, or AP dependency graph.
+- **Drift** - rules slowly stop matching the actual blueprint. *Mitigation*: the wiki health score (section 6) tracks rule violation density over time; spikes surface in `SessionStart`.
+- **Local-minima trap** - Reflexion is documented to struggle with tasks requiring creative escape. From the original paper: WebShop benchmark, four trials, no improvement, agent gives up. *Mitigation*: the human is in the loop for proposals that touch architecture; creative escapes are explicitly the human's job, not the loop's.
 
 ### Three-layer verification
 
@@ -197,25 +197,25 @@ For the bleu, this maps to:
 
 1. The Curator's normal output discipline (the existing Phase 0-7 workflow)
 2. The Linter reading actual `blueprint/` files to verify proposed rule violations
-3. The Auditor as an `agent` hook running with explicit rubric criteria — not just "is this proposal good?" but "approve / escalate / reject with reasoning grounded in file evidence"
+3. The Auditor as an `agent` hook running with explicit rubric criteria - not just "is this proposal good?" but "approve / escalate / reject with reasoning grounded in file evidence"
 
-Layered models pattern: use a **cheaper model for the Linter** (Haiku is fine — it's pattern-matching against schema rules) and a **stronger model for the Auditor** (Sonnet — it's making approve/reject judgment calls). Or invert if your failure pattern is missed proposals rather than bad approvals.
+Layered models pattern: use a **cheaper model for the Linter** (Haiku is fine - it's pattern-matching against schema rules) and a **stronger model for the Auditor** (Sonnet - it's making approve/reject judgment calls). Or invert if your failure pattern is missed proposals rather than bad approvals.
 
 ### Why this matters
 
-Without reflection, the wiki only improves when the human notices something wrong. With reflection, the wiki notices its own drift and proposes fixes — but the human still controls the schema (via approving or rejecting proposals), so the LLM can't quietly turn the wiki into something the human didn't ask for.
+Without reflection, the wiki only improves when the human notices something wrong. With reflection, the wiki notices its own drift and proposes fixes - but the human still controls the schema (via approving or rejecting proposals), so the LLM can't quietly turn the wiki into something the human didn't ask for.
 
 This is the same principle as Self-RAG and other agentic reflection patterns: the model critiques its own output, but a separate evaluator gates the critique.
 
 ---
 
-## 2. Structure layers — graph + episodic/semantic memory
+## 2. Structure layers - graph + episodic/semantic memory
 
 Markdown is the substrate. Two structure layers go on top of it:
 
 ### 2A. Knowledge graph overlay
 
-Maintain a lightweight graph of entities, concepts, and backlinks alongside the wiki. The graph is **derived** from the markdown, not authoritative — if the graph and the markdown disagree, the markdown wins and the graph is rebuilt.
+Maintain a lightweight graph of entities, concepts, and backlinks alongside the wiki. The graph is **derived** from the markdown, not authoritative - if the graph and the markdown disagree, the markdown wins and the graph is rebuilt.
 
 **File:** `blueprint/.graph/graph.json`
 
@@ -242,14 +242,14 @@ Maintain a lightweight graph of entities, concepts, and backlinks alongside the 
 - **MCP-queryable.** A small MCP server (or a CLI) reads `.graph/graph.json` and answers "what depends on `auth-service`?" or "show me everything that mentions `token.issued`." This becomes a tool the main agent can use during research and lint passes.
 - **Lint signals.** Dangling edges (edge points to a non-existent node) become high-severity lint findings. Orphan nodes (no edges) become medium-severity findings.
 
-**Rebuild rule:** the graph is regenerated from scratch on every Curator cycle. Never edit `.graph/graph.json` by hand — it's a derived artifact.
+**Rebuild rule:** the graph is regenerated from scratch on every Curator cycle. Never edit `.graph/graph.json` by hand - it's a derived artifact.
 
 ### 2B. Episodic vs semantic memory ("semantization")
 
-The episodic→semantic split is the canonical CoALA taxonomy (Cognitive Architectures for Language Agents, Princeton 2023), used by every major memory framework — Letta/MemGPT, LangChain LangMem, MIRIX, A-MEM. It maps cleanly to the bleu workspace:
+The episodic→semantic split is the canonical CoALA taxonomy (Cognitive Architectures for Language Agents, Princeton 2023), used by every major memory framework - Letta/MemGPT, LangChain LangMem, MIRIX, A-MEM. It maps cleanly to the bleu workspace:
 
-- **Episodic memory** → `blueprint/raw/` — time-stamped, situational. The user transcript, the meeting notes, the codebase snapshot, the research dumps. "Yesterday the user said X."
-- **Semantic memory** → `blueprint/plan/` and `blueprint/research/` — general knowledge detached from context. "The architecture uses pattern Y because Z."
+- **Episodic memory** → `blueprint/raw/` - time-stamped, situational. The user transcript, the meeting notes, the codebase snapshot, the research dumps. "Yesterday the user said X."
+- **Semantic memory** → `blueprint/plan/` and `blueprint/research/` - general knowledge detached from context. "The architecture uses pattern Y because Z."
 
 The Curator's compile mode is what MemGPT's literature calls **"semantization"**: the process of decoupling core information from its specific contextual details. From the MemGPT writeup:
 
@@ -257,23 +257,23 @@ The Curator's compile mode is what MemGPT's literature calls **"semantization"**
 
 For the bleu Curator, semantization is the rule: **never copy raw content into plan files verbatim**. Always extract the principle, name the source, link back. "Per the user's intake (raw/intake.md), the system must support up to 10K concurrent users" not "the user said 'we need to support like 10K users at peak'."
 
-The 2025 position paper "Episodic Memory is the Missing Piece for Long-Term LLM Agents" argues that explicit episodic memory unlocks long-term continuity that other memory approaches can't provide. The blueprint's `raw/` directory is exactly this — episodic memory the agent can re-read on any future session.
+The 2025 position paper "Episodic Memory is the Missing Piece for Long-Term LLM Agents" argues that explicit episodic memory unlocks long-term continuity that other memory approaches can't provide. The blueprint's `raw/` directory is exactly this - episodic memory the agent can re-read on any future session.
 
 ### Strategic forgetting
 
 MemGPT's other important contribution is **cognitive triage**: the LLM evaluates the future value of stored information and aggressively prunes low-value content via summarization or targeted deletion.
 
-Application to the bleu: **`raw/transcripts/` should be aggressively pruned**. After a few weeks, old transcripts can be summarized and archived. `plan/` files should never be silently pruned — they're the semantic layer. Don't treat all memory as equally valuable.
+Application to the bleu: **`raw/transcripts/` should be aggressively pruned**. After a few weeks, old transcripts can be summarized and archived. `plan/` files should never be silently pruned - they're the semantic layer. Don't treat all memory as equally valuable.
 
 ### The original episodic/semantic split documentation
 
 The wiki has two kinds of content that the base skill conflates:
 
-- **Episodic memory** — raw session traces, conversation transcripts, "what happened on Tuesday." These live in `blueprint/raw/` already, but should be split out further:
-  - `blueprint/raw/transcripts/<timestamp>.md` — full session transcripts (the `PreCompact` hook from `claude-code-integration.md` already writes here).
-  - `blueprint/raw/decisions/<timestamp>.md` — discrete decision moments captured from the conversation ("user chose Postgres over SQLite at 2026-04-07 14:32").
+- **Episodic memory** - raw session traces, conversation transcripts, "what happened on Tuesday." These live in `blueprint/raw/` already, but should be split out further:
+  - `blueprint/raw/transcripts/<timestamp>.md` - full session transcripts (the `PreCompact` hook from `claude-code-integration.md` already writes here).
+  - `blueprint/raw/decisions/<timestamp>.md` - discrete decision moments captured from the conversation ("user chose Postgres over SQLite at 2026-04-07 14:32").
 
-- **Semantic memory** — synthesized, denormalized articles about concepts. These live in `blueprint/plan/` and `blueprint/research/`. They're stable, edited carefully, and reflect the current best understanding.
+- **Semantic memory** - synthesized, denormalized articles about concepts. These live in `blueprint/plan/` and `blueprint/research/`. They're stable, edited carefully, and reflect the current best understanding.
 
 **Bidirectional linking.** Every semantic article carries a `## Sources` section listing the episodic files that informed it. Every episodic file gets a `## Synthesized into` section (added by the Curator) listing the semantic files it influenced. This makes drift detectable: if a decision in episodic memory was later overruled in conversation, the link surfaces it.
 
@@ -292,7 +292,7 @@ The base skill has one subagent (KB Curator). The agent team expands this into f
 | **Linter** | Reflection pass; finds gaps, contradictions, rule violations; writes to `.reflection/proposals/` | `Read, Glob, Grep` | `blueprint/`, `.claude/rules/` | `blueprint/.reflection/proposals/` | `.claude/agents/kb-linter.md` |
 | **Auditor** | Validates Linter proposals; approves/rejects/escalates | (read-only, set by hook) | `blueprint/.reflection/proposals/` | `blueprint/.reflection/verdicts/`, `blueprint/.reflection/escalations/` | **Agent hook** on `SubagentStop` matched to `kb-linter` (no separate agent file) |
 
-The KB Curator from `claude-code-integration.md` is the same Curator role here — just renamed conceptually. The other three are new files in `.claude/agents/`.
+The KB Curator from `claude-code-integration.md` is the same Curator role here - just renamed conceptually. The other three are new files in `.claude/agents/`.
 
 ### The GAN-inspired three-agent baseline (Anthropic, 2026)
 
@@ -302,7 +302,7 @@ The bleu's four-agent team is a **superset**:
 
 | Anthropic's role | This skill's agent | Why we have four instead of three |
 |---|---|---|
-| Planner | (the user, in Phase 0-1) | Phase 0 intake is human-led — the user defines the problem, scope, and feature list. We don't automate this. |
+| Planner | (the user, in Phase 0-1) | Phase 0 intake is human-led - the user defines the problem, scope, and feature list. We don't automate this. |
 | Generator (research) | **Researcher** | Web research is split out so it has its own tool whitelist (WebFetch, WebSearch, no edit) and so its outputs land in `raw/research/` for independent audit. |
 | Generator (compile) | **Curator** | Compiles `raw/` into `plan/`, rebuilds index. Where the structured wiki actually gets written. |
 | Evaluator | **Linter** + **Auditor** | Split into two for the proposer-validator separation reason above. The Linter proposes; the Auditor validates. Same Anthropic principle, made structural. |
@@ -311,7 +311,7 @@ If the user is on a recent Opus model and the project is small, the four-agent t
 
 ### Why four agents and not one
 
-- **Tool isolation.** The Researcher needs web access. The Curator needs filesystem write. The Linter and Auditor need to be read-only. One agent with all four capabilities is a much wider attack surface — and prone to "while I'm at it" drift where it modifies things outside its job.
+- **Tool isolation.** The Researcher needs web access. The Curator needs filesystem write. The Linter and Auditor need to be read-only. One agent with all four capabilities is a much wider attack surface - and prone to "while I'm at it" drift where it modifies things outside its job.
 - **Proposer-validator separation.** The Linter proposes changes; the Auditor validates them. Same agent doing both is just self-approval.
 - **Parallel execution.** When the user is working through a complex blueprint, Researcher and Curator can run on different files in parallel without context contamination.
 - **Audit trail.** Each agent's outputs land in distinct directories, so it's clear which agent touched what. Useful for debugging "why did this entry change?"
@@ -327,16 +327,16 @@ Agents communicate through files, but the **transitions are automated by hooks**
 
 This is the modern pattern. The previous version of this file used a `.reflection/pending-lint` marker file and manual orchestration; that worked but required either an extra hook or user attention. With agent hooks, the auditor is fully automatic.
 
-### Subagent frontmatter — built-in features to use
+### Subagent frontmatter - built-in features to use
 
 For each agent file, lean on Claude Code's built-in subagent features instead of hand-rolling:
 
-- **`memory: project`** — built-in persistent directory at `.claude/agent-memory/<name>/`. The `MEMORY.md` file there is auto-injected into the agent's prompt at startup. Use this for institutional knowledge instead of `raw/curator-notes.md`.
-- **`skills: [bleu]`** — preloads the entire skill content into the agent's context at startup. All four agents should have this.
-- **`isolation: worktree`** — for the Linter especially, runs the agent in an isolated git worktree. If it makes no changes, the worktree auto-cleans. Useful for "dry-run" lint passes that explore without polluting the working tree.
-- **`background: true`** — for the Linter, makes Claude always spawn it as a background task so the user keeps working. Only enable after testing interactively first; background subagents auto-deny any permission they didn't get up front.
-- **`hooks` in frontmatter** — scoped to the agent's lifecycle, cleaned up when it finishes. Cleaner than putting everything in `.claude/settings.json`.
-- **`mcpServers` inline** — give the Researcher web/docs MCPs without polluting the parent conversation's context.
+- **`memory: project`** - built-in persistent directory at `.claude/agent-memory/<name>/`. The `MEMORY.md` file there is auto-injected into the agent's prompt at startup. Use this for institutional knowledge instead of `raw/curator-notes.md`.
+- **`skills: [bleu]`** - preloads the entire skill content into the agent's context at startup. All four agents should have this.
+- **`isolation: worktree`** - for the Linter especially, runs the agent in an isolated git worktree. If it makes no changes, the worktree auto-cleans. Useful for "dry-run" lint passes that explore without polluting the working tree.
+- **`background: true`** - for the Linter, makes Claude always spawn it as a background task so the user keeps working. Only enable after testing interactively first; background subagents auto-deny any permission they didn't get up front.
+- **`hooks` in frontmatter** - scoped to the agent's lifecycle, cleaned up when it finishes. Cleaner than putting everything in `.claude/settings.json`.
+- **`mcpServers` inline** - give the Researcher web/docs MCPs without polluting the parent conversation's context.
 
 See `claude-code-integration.md` for the full schema and verified examples.
 
@@ -350,9 +350,9 @@ If the blueprint is small (under ~10 APs, no external integrations, no team coll
 
 The base skill has implicit rules ("every AP needs a Verification section") scattered across reference files. Schema-as-code makes them **explicit** and **enforceable**.
 
-The right home for these rules in Claude Code is **`.claude/rules/blueprint-schema.md`** — a path-conditional rule file that Claude Code loads automatically via the `InstructionsLoaded` event when Claude accesses any file matching the `paths:` glob in the file's frontmatter. This means:
+The right home for these rules in Claude Code is **`.claude/rules/blueprint-schema.md`** - a path-conditional rule file that Claude Code loads automatically via the `InstructionsLoaded` event when Claude accesses any file matching the `paths:` glob in the file's frontmatter. This means:
 
-- The Linter doesn't need to "go fetch the rules" — they're already in its context the moment it touches `blueprint/`.
+- The Linter doesn't need to "go fetch the rules" - they're already in its context the moment it touches `blueprint/`.
 - The main agent and any other subagent that touches `blueprint/` also gets the rules automatically.
 - The rules participate in the same loading lifecycle as `CLAUDE.md`, so they can be audited via the `InstructionsLoaded` event for telemetry.
 
@@ -413,11 +413,11 @@ reflection loop (Linter proposes, Auditor approves, human steers).
 
 ### How rules are enforced
 
-The Linter checks each rule in `.claude/rules/blueprint-schema.md` against the wiki on every cycle. Rules are written in **prose**, not regex — the Linter is an LLM, it can interpret "the file contains a heading 'Verification' with at least one checkbox underneath" without you writing a parser. This is the symbolic/rule-based layer riding on top of the LLM's reasoning, rather than a traditional rule engine.
+The Linter checks each rule in `.claude/rules/blueprint-schema.md` against the wiki on every cycle. Rules are written in **prose**, not regex - the Linter is an LLM, it can interpret "the file contains a heading 'Verification' with at least one checkbox underneath" without you writing a parser. This is the symbolic/rule-based layer riding on top of the LLM's reasoning, rather than a traditional rule engine.
 
 Two enforcement paths:
 
-1. **Continuous enforcement (passive).** Because `paths: ["blueprint/**"]` makes Claude Code load the rules automatically whenever any file under `blueprint/` is accessed, every agent — main, curator, linter — has the rules in scope. This makes "the curator quietly violating R-02 because it forgot the rule exists" much less likely.
+1. **Continuous enforcement (passive).** Because `paths: ["blueprint/**"]` makes Claude Code load the rules automatically whenever any file under `blueprint/` is accessed, every agent - main, curator, linter - has the rules in scope. This makes "the curator quietly violating R-02 because it forgot the rule exists" much less likely.
 2. **Explicit lint pass (active).** The Linter agent walks the wiki and produces structured violation reports in `.reflection/proposals/` with `type: rule-violation`. ERROR-level violations block Phase 7 sign-off until resolved. WARN-level surface but don't block.
 
 Rule violations land in `.reflection/proposals/` with the AP/file that violated the rule, the rule ID, and the suggested fix. The Auditor (agent hook) approves trivial fixes; non-trivial ones escalate to the user.
@@ -426,7 +426,7 @@ Rule violations land in `.reflection/proposals/` with the AP/file that violated 
 
 Rules are added through the reflection loop, not by hand. When the Reflector notices a recurring pattern in the wiki, it proposes a new rule. The Auditor reviews. If it escalates, the human approves the rule text. The rule lands in `schema/rules.md` and starts being enforced on the next cycle.
 
-This means the schema **co-evolves** with the wiki — which is the whole point. The human's editorial role shifts from writing wiki content to refining the rules that govern the wiki content.
+This means the schema **co-evolves** with the wiki - which is the whole point. The human's editorial role shifts from writing wiki content to refining the rules that govern the wiki content.
 
 ### Symbolic ontology (optional)
 
@@ -436,11 +436,11 @@ For substantial blueprints, also maintain `.claude/rules/blueprint-ontology.md` 
 # Ontology
 
 ## Types
-- **Component** — a unit of system functionality with its own file in plan/03-components/
-- **Entity** — a data object defined in plan/04-data-model.md
-- **ActionPoint** — an executable unit of implementation work in action-points/
-- **Service** — an external integration in plan/05-integrations.md
-- **Research** — a cited research note in research/
+- **Component** - a unit of system functionality with its own file in plan/03-components/
+- **Entity** - a data object defined in plan/04-data-model.md
+- **ActionPoint** - an executable unit of implementation work in action-points/
+- **Service** - an external integration in plan/05-integrations.md
+- **Research** - a cited research note in research/
 
 ## Allowed relationships
 - Component MANAGES Entity
@@ -465,26 +465,26 @@ Two halves: ingest of non-text materials, and generation of visual outputs.
 
 When the user drops a PDF, image, or screenshot into `blueprint/raw/`, the Curator (or a dedicated Ingester subagent if the user wants finer separation) does the following:
 
-- **Images** — uses vision capability to describe what's in them. Writes `raw/<image-name>.description.md` with a structured description, plus a copy of the image at `raw/<image-name>` so it remains viewable. The description includes any text the image contains (OCR-style), visible UI elements, and a paragraph of holistic interpretation.
-- **PDFs** — extracts text page by page into `raw/<pdf-name>.text.md`. For PDFs with diagrams, also rasterizes the diagram pages and treats them as images per the rule above.
-- **Screenshots of conversations / whiteboards / notebooks** — same as images, but the description format emphasizes "what's the user trying to communicate" over literal description.
+- **Images** - uses vision capability to describe what's in them. Writes `raw/<image-name>.description.md` with a structured description, plus a copy of the image at `raw/<image-name>` so it remains viewable. The description includes any text the image contains (OCR-style), visible UI elements, and a paragraph of holistic interpretation.
+- **PDFs** - extracts text page by page into `raw/<pdf-name>.text.md`. For PDFs with diagrams, also rasterizes the diagram pages and treats them as images per the rule above.
+- **Screenshots of conversations / whiteboards / notebooks** - same as images, but the description format emphasizes "what's the user trying to communicate" over literal description.
 
-All ingested materials are then candidate inputs for the Curator's compile mode — they become source material for plan/ and research/ files just like text inputs.
+All ingested materials are then candidate inputs for the Curator's compile mode - they become source material for plan/ and research/ files just like text inputs.
 
 ### Derived outputs
 
 Generated visual artifacts live in `blueprint/derived/`. This includes:
 
-- **Architecture diagrams** — mermaid or SVG generated from `plan/01-architecture.md` and the graph.
-- **Dependency graphs** — mermaid generated from `action-points/README.md` and `.graph/graph.json`.
-- **Pipeline diagrams** — one per pipeline in `plan/02-pipelines.md`.
-- **Wiki health charts** — produced by the observability layer (section 6).
+- **Architecture diagrams** - mermaid or SVG generated from `plan/01-architecture.md` and the graph.
+- **Dependency graphs** - mermaid generated from `action-points/README.md` and `.graph/graph.json`.
+- **Pipeline diagrams** - one per pipeline in `plan/02-pipelines.md`.
+- **Wiki health charts** - produced by the observability layer (section 6).
 
-`blueprint/derived/` is fully regenerable. Treat it like a build artifact — it should be in `.gitignore` if the user is using git auto-commits, regenerated on demand or on a schedule.
+`blueprint/derived/` is fully regenerable. Treat it like a build artifact - it should be in `.gitignore` if the user is using git auto-commits, regenerated on demand or on a schedule.
 
 ### Why split derived from plan
 
-Plan files are hand-curated (well — LLM-curated, human-steered). Derived files are mechanical outputs of plan files. Mixing them invites the failure mode where someone edits a derived file and then loses the edit on the next regeneration. Keeping them separate makes the derivation direction obvious.
+Plan files are hand-curated (well - LLM-curated, human-steered). Derived files are mechanical outputs of plan files. Mixing them invites the failure mode where someone edits a derived file and then loses the edit on the next regeneration. Keeping them separate makes the derivation direction obvious.
 
 ---
 
@@ -494,7 +494,7 @@ The wiki grows. Without metrics, you don't know whether it's getting healthier o
 
 ### Telemetry log
 
-`blueprint/.telemetry/events.jsonl` — append-only log, one JSON line per event. Events:
+`blueprint/.telemetry/events.jsonl` - append-only log, one JSON line per event. Events:
 
 ```json
 {"ts":"2026-04-07T14:32:00Z","event":"compile","agent":"curator","input":"raw/auth-notes.md","outputs":["plan/03-components/auth-service.md"],"tokens_in":4200,"tokens_out":1800}
@@ -570,10 +570,10 @@ External integrations bring outside materials into `raw/` automatically. All of 
 
 Each integration follows the same pattern:
 
-1. **Pull** — the MCP (or a scheduled script) writes raw content to a subdirectory of `raw/`. Filenames include a timestamp and source ID.
-2. **Detect** — the `PostToolUse` hook on `Write` to `raw/**` fires.
-3. **Compile** — the Curator picks up the new file, reads it, and decides whether it warrants a new plan/research entry, an update to an existing entry, or just sits in `raw/` as reference material.
-4. **Cite** — anything the Curator carries into plan/ files cites the original raw source so the chain of evidence is preserved.
+1. **Pull** - the MCP (or a scheduled script) writes raw content to a subdirectory of `raw/`. Filenames include a timestamp and source ID.
+2. **Detect** - the `PostToolUse` hook on `Write` to `raw/**` fires.
+3. **Compile** - the Curator picks up the new file, reads it, and decides whether it warrants a new plan/research entry, an update to an existing entry, or just sits in `raw/` as reference material.
+4. **Cite** - anything the Curator carries into plan/ files cites the original raw source so the chain of evidence is preserved.
 
 ### What NOT to integrate
 
@@ -589,13 +589,13 @@ When the user asks for advanced capabilities (or you notice the blueprint is get
 
 > "Beyond the base wiki, I can add:
 >
-> 1. **Reflection loop** — Linter proposes improvements, Auditor validates, schema co-evolves.
-> 2. **Knowledge graph + episodic/semantic split** — derived graph layer, separate episodic memory from synthesized articles.
-> 3. **Agent team** — Researcher / Curator / Linter / Auditor with locked tool whitelists.
-> 4. **Schema-as-code** — explicit rules in `schema/rules.md` enforced on every cycle.
-> 5. **Multimodal ingest** — PDFs, images, screenshots get described and compiled.
-> 6. **Observability** — wiki health score and telemetry log.
-> 7. **External integrations** — MCPs for GitHub, Linear, meeting notes, web search.
+> 1. **Reflection loop** - Linter proposes improvements, Auditor validates, schema co-evolves.
+> 2. **Knowledge graph + episodic/semantic split** - derived graph layer, separate episodic memory from synthesized articles.
+> 3. **Agent team** - Researcher / Curator / Linter / Auditor with locked tool whitelists.
+> 4. **Schema-as-code** - explicit rules in `schema/rules.md` enforced on every cycle.
+> 5. **Multimodal ingest** - PDFs, images, screenshots get described and compiled.
+> 6. **Observability** - wiki health score and telemetry log.
+> 7. **External integrations** - MCPs for GitHub, Linear, meeting notes, web search.
 >
 > These layer on top of the base workspace. Pick any subset. I'll show you the files I'd add before writing them."
 
@@ -605,8 +605,8 @@ Each capability is independently useful. The user doesn't have to take all seven
 - Schema-as-code benefits from the Linter agent but works as a hand-checked checklist without it.
 - Agent team benefits from the hooks in `claude-code-integration.md` but works on demand without them.
 - Knowledge graph benefits from the ontology in schema-as-code but works without it.
-- Observability is independent — works alone.
-- External integrations are independent — pick the ones the project actually needs.
+- Observability is independent - works alone.
+- External integrations are independent - pick the ones the project actually needs.
 
 The pattern: start with the base workflow, add the reflection loop and schema-as-code together, then add observability, then the agent team, then graph + episodic/semantic, then multimodal, then external integrations as the project demands them. That's the order of marginal value for most blueprints.
 

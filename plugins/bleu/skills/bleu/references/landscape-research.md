@@ -7,7 +7,7 @@ The findings here directly informed updates to SKILL.md and the other reference 
 ---
 
 
-## 1. The markdown-wiki-over-RAG pattern — adopter wins
+## 1. The markdown-wiki-over-RAG pattern - adopter wins
 
 A growing pattern in the LLM tooling community treats an LLM as a "research librarian" that compiles raw materials into an interlinked markdown wiki rather than using RAG (chunking + vector search). Working implementations have converged on several actionable techniques.
 
@@ -23,14 +23,14 @@ The system uses JWT tokens issued by `auth-service`...
 Limits are configured per endpoint. See raw notes for current values.
 
 ## Error handling [coverage: low]
-Partial — needs more sources.
+Partial - needs more sources.
 ```
 
 - `coverage: high` → trust this section, skip the raw files
 - `coverage: medium` → good overview, check raw sources for granular questions
 - `coverage: low` → wiki is incomplete here, defer to raw
 
-**Quantified win**: the same plugin reports going from "13+ raw files / ~3,200 lines per session" to "INDEX + 2 topic articles / ~330 lines per session" — roughly **10× context reduction** for the same answer quality.
+**Quantified win**: the same plugin reports going from "13+ raw files / ~3,200 lines per session" to "INDEX + 2 topic articles / ~330 lines per session" - roughly **10× context reduction** for the same answer quality.
 
 Source: https://github.com/ussumant/llm-wiki-compiler
 
@@ -40,15 +40,15 @@ Same plugin distinguishes two article types, generated automatically:
 
 - **Topic articles** are factual: "what happened?" One per concept identified across raw materials.
 - **Concept articles** are interpretive and span 3+ topics: "what does this pattern *mean*?" Examples:
-  - "Speed vs Quality Tradeoff — 6 instances where this decision appeared across retention, push notifications, and experiment design"
-  - "Working with the Platform Team — communication patterns and decision dynamics synthesized from 24 meetings"
-  - "Evolution of Retention Thinking — how the approach changed over six months"
+  - "Speed vs Quality Tradeoff - 6 instances where this decision appeared across retention, push notifications, and experiment design"
+  - "Working with the Platform Team - communication patterns and decision dynamics synthesized from 24 meetings"
+  - "Evolution of Retention Thinking - how the approach changed over six months"
 
 The compiler scans the topic articles for patterns spanning 3+ topics and generates concept articles in `wiki/concepts/` automatically.
 
 ### The three-layer architecture is now canonical
 
-Multiple secondary sources have converged on the same three-layer mental model: **raw / wiki / schema**. The schema layer is *explicit* — a file like `CLAUDE.md`, `AGENTS.md`, or `schema.md` that defines folder structure, citation rules, ingest workflow, Q&A behavior, and linting conventions. This is what turns an LLM from a generic chatbot into a disciplined wiki maintainer.
+Multiple secondary sources have converged on the same three-layer mental model: **raw / wiki / schema**. The schema layer is *explicit* - a file like `CLAUDE.md`, `AGENTS.md`, or `schema.md` that defines folder structure, citation rules, ingest workflow, Q&A behavior, and linting conventions. This is what turns an LLM from a generic chatbot into a disciplined wiki maintainer.
 
 ### Contamination control via separate vault
 
@@ -60,7 +60,7 @@ For the bleu workspace, this means: keep human-authored project docs (READMEs, A
 
 The strongest single argument for the whole pattern, worth memorizing:
 
-> The tedious part of maintaining a knowledge base is not the reading or the thinking — it's the bookkeeping. Updating cross-references, keeping summaries current, noting when new data contradicts old claims, maintaining consistency across dozens of pages. Humans abandon wikis because the maintenance burden grows faster than the value. LLMs don't get bored, don't forget to update a cross-reference, and can touch 15 files in one pass.
+> The tedious part of maintaining a knowledge base is not the reading or the thinking - it's the bookkeeping. Updating cross-references, keeping summaries current, noting when new data contradicts old claims, maintaining consistency across dozens of pages. Humans abandon wikis because the maintenance burden grows faster than the value. LLMs don't get bored, don't forget to update a cross-reference, and can touch 15 files in one pass.
 
 This is the strongest single argument for the skill's existence. Every other design choice serves it.
 
@@ -88,7 +88,7 @@ For research-heavy blueprints, the citation rules in `references/research-and-ci
 
 ---
 
-## 2. CLAUDE.md / AGENTS.md — what the research actually shows
+## 2. CLAUDE.md / AGENTS.md - what the research actually shows
 
 This was the most surprising research finding and required reversing my previous advice in `claude-code-integration.md`.
 
@@ -104,11 +104,11 @@ Tested four agents (Claude Code with Sonnet 4.5, Codex with GPT-5.2 and GPT-5.1 
 
 1. **LLM-generated context files reduce task success rates by ~3% on average** compared to no context file at all.
 2. **Context files of any kind increase inference cost by 14-22%** through extra reasoning steps (2-4 additional tool calls per task).
-3. Human-written files give a marginal **~4% improvement** over no file — but still incur the cost overhead.
+3. Human-written files give a marginal **~4% improvement** over no file - but still incur the cost overhead.
 4. **Stronger models do not produce better context files**: GPT-5.2-generated files improved performance on SWE-Bench but degraded on AGENTbench.
 5. **Context files don't help agents find files faster**: agents took roughly the same number of steps to reach relevant files even with codebase overviews.
-6. **GPT-5.1 Mini spent extra steps re-reading context files already loaded into its context window** — pure waste.
-7. Agents do follow the instructions faithfully — when the file mentions `uv`, agents use `uv` 1.6× per instance vs <0.01× without — but the broader exploration triggered by the file doesn't improve outcomes.
+6. **GPT-5.1 Mini spent extra steps re-reading context files already loaded into its context window** - pure waste.
+7. Agents do follow the instructions faithfully - when the file mentions `uv`, agents use `uv` 1.6× per instance vs <0.01× without - but the broader exploration triggered by the file doesn't improve outcomes.
 
 Sources:
 - Paper: https://arxiv.org/abs/2602.11988
@@ -122,13 +122,13 @@ Sources:
 Previous version of `claude-code-integration.md` recommended a `CLAUDE.md` that told Claude about the blueprint workspace upfront. Updated version recommends:
 
 - **Start with no `CLAUDE.md`**. Let the agent work without one. For most tasks, the README and existing docs are enough.
-- **Add rules iteratively, only when you observe a recurring failure**. Not a one-off mistake — a *pattern*.
+- **Add rules iteratively, only when you observe a recurring failure**. Not a one-off mistake - a *pattern*.
 - **Write for the gap, not the overview**. Tool choices that diverge from defaults (`use uv, not pip`), non-obvious test configurations, custom build commands. Skip everything inferable from `package.json`, `pyproject.toml`, `README.md`, existing `tsconfig`, etc.
 - **Target under 150 lines** for the file as a whole. Frontier thinking models follow ~150-200 instructions reliably; Claude Code's own system prompt has ~50, so you have ~100-150 to spend wisely.
 - **Hooks > CLAUDE.md instructions for things that must happen every time**. Hooks are deterministic; CLAUDE.md instructions are advisory. Anthropic's own docs make this distinction: "Use hooks for actions that must happen every time with zero exceptions."
 - **Delete most of what `/init` generates**. The starter file includes many "obvious" things (yes, this is a TypeScript project) that compete for attention with the actual work.
 
-### Anthropic's `<system-reminder>` injection — the smoking gun
+### Anthropic's `<system-reminder>` injection - the smoking gun
 
 HumanLayer discovered that Claude Code injects this with every CLAUDE.md load:
 
@@ -176,7 +176,7 @@ Critical implementation detail: **the initializer and coding agents are the same
 
 ### The two failure modes addressed
 
-- **Premature completion**: agents declare a project "complete" at maybe 60% done. Mitigated by the comprehensive feature list — the agent has to walk through all of it before declaring done.
+- **Premature completion**: agents declare a project "complete" at maybe 60% done. Mitigated by the comprehensive feature list - the agent has to walk through all of it before declaring done.
 - **Context anxiety**: model wraps up work prematurely as it approaches what it *believes* is its context limit. Sonnet 4.5 exhibited this strongly; Opus 4.6 mostly fixed it. Mitigated by context resets (clean slate) plus structured handoff artifacts.
 
 ### Context reset vs compaction
@@ -194,7 +194,7 @@ Prithvi Rajasekaran's follow-up. Three-agent architecture: **planner / generator
 
 **The self-evaluation problem**:
 
-> "When asked to evaluate work they've produced, agents tend to respond by confidently praising the work — even when, to a human observer, the quality is obviously mediocre."
+> "When asked to evaluate work they've produced, agents tend to respond by confidently praising the work - even when, to a human observer, the quality is obviously mediocre."
 
 This is why the **adversarial evaluation pattern** matters: the agent doing the work is *not* the agent judging it. For frontend design work, the evaluator was given four explicit grading criteria (design quality, originality, craft, functionality) and tools to interactively test running applications via Playwright MCP.
 
@@ -218,7 +218,7 @@ The feature list analog is the action-points/ directory plus `action-points/READ
 
 ---
 
-## 4. Spec-driven development — the canonical workflow
+## 4. Spec-driven development - the canonical workflow
 
 Three frontrunners in spec-driven development (SDD): GitHub Spec Kit, AWS Kiro IDE, BMAD-METHOD. All three converge on similar shapes with different emphases.
 
@@ -251,7 +251,7 @@ A practitioner reported: 86.5% test coverage on a real project, "the FIT convers
 
 Multi-agent framework with six named personas: Analyst, Project Manager, Architect, Developer, QA Agent, plus Orchestrator. File-based handoffs via "story files." Strict role boundaries and discrete handoff protocols. Steep learning curve (21+ agents, YAML workflows).
 
-Best for large greenfield projects with significant upfront planning value. Not recommended for small teams or rapid iteration — coordination overhead consumes more time than the structure saves.
+Best for large greenfield projects with significant upfront planning value. Not recommended for small teams or rapid iteration - coordination overhead consumes more time than the structure saves.
 
 ### The "sledgehammer for a nut" failure mode
 
@@ -261,7 +261,7 @@ Martin Fowler's review of all three tools surfaces a critical adaptive-sizing pr
 
 Source: https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html
 
-**Application to the bleu**: the `~38 action points` target is explicitly framed as a granularity guideline, not a quota. Small projects should have fewer APs. The Phase 0 intake should size the workflow to match the project — a one-day refactor doesn't need a 38-AP blueprint.
+**Application to the bleu**: the `~38 action points` target is explicitly framed as a granularity guideline, not a quota. Small projects should have fewer APs. The Phase 0 intake should size the workflow to match the project - a one-day refactor doesn't need a 38-AP blueprint.
 
 ### Living spec vs static spec
 
@@ -298,9 +298,9 @@ Sources:
 
 Three subagents:
 
-1. **pm-spec** — reads enhancement, writes spec, asks clarifying questions, sets status `READY_FOR_ARCH`
-2. **architect-review** — validates against platform constraints, produces an ADR, sets status `READY_FOR_BUILD`
-3. **implementer-tester** — implements, tests, summarizes changes, sets status `DONE`
+1. **pm-spec** - reads enhancement, writes spec, asks clarifying questions, sets status `READY_FOR_ARCH`
+2. **architect-review** - validates against platform constraints, produces an ADR, sets status `READY_FOR_BUILD`
+3. **implementer-tester** - implements, tests, summarizes changes, sets status `DONE`
 
 **Key principle**: "We kept humans in control: hooks suggested the next step, but a person explicitly ran it. That was the whole point. Repeatable progress, less chaos."
 
@@ -308,7 +308,7 @@ Three subagents:
 
 ### Wins from Part II
 
-- **Context forking** for messy work: implementer and qa subagents run in forked contexts. They can do `npm test`, giant diffs, iterative debugging — and return a clean summary. This prevents the main conversation from "slowly turning into a landfill."
+- **Context forking** for messy work: implementer and qa subagents run in forked contexts. They can do `npm test`, giant diffs, iterative debugging - and return a clean summary. This prevents the main conversation from "slowly turning into a landfill."
 - **PreToolUse hooks** for blocking the most dangerous commands. "Add a PreToolUse hook that blocks the most dangerous commands your team worries about."
 - **Don't boil the ocean**: "Pick one repo, pick one slug, and run it end-to-end."
 
@@ -318,11 +318,11 @@ https://dev.to/jangwook_kim_e31e7291ad98/claude-code-advanced-workflow-subagents
 
 A "fully AI-powered content company with 14 agents orchestrated through Paperclip. Every agent runs Claude Code." Their wins:
 
-- **Content QA Agent**: reviews Markdown for broken links, missing frontmatter, SEO issues, factual consistency before publishing — runs in isolation so the publishing agent's context stays focused.
+- **Content QA Agent**: reviews Markdown for broken links, missing frontmatter, SEO issues, factual consistency before publishing - runs in isolation so the publishing agent's context stays focused.
 - **Dependency Auditor**: when updating packages, a subagent checks each dependency for breaking changes, security advisories. Main session sees only "3 packages updated safely, 1 requires manual migration."
 - **Code Exploration**: use the built-in Explore subagent rather than main agent reading dozens of files.
 
-### wshobson/agents — the scale benchmark
+### wshobson/agents - the scale benchmark
 
 https://github.com/wshobson/agents
 
@@ -330,7 +330,7 @@ https://github.com/wshobson/agents
 
 Includes a **conductor plugin** that turns Claude Code into a project management tool with a **Context → Spec & Plan → Implement** workflow. Same family as Spec Kit and the bleu's Phase 0-7.
 
-### VoltAgent — 100+ specialized subagents catalog
+### VoltAgent - 100+ specialized subagents catalog
 
 https://github.com/VoltAgent/awesome-claude-code-subagents
 
@@ -340,12 +340,12 @@ Catalog of community-contributed subagents organized by role: orchestrators, res
 
 - **Tool sprawl**: omitting `tools` grants all available tools to a subagent. Whitelist intentionally.
 - **Subagents in foreground when they should be background**: blocking the user during long operations.
-- **No interactive thinking mode for subagents** — hard to monitor progress until they finish.
-- **Subagents don't support stepwise plans** — they execute immediately. Use the main agent for tasks needing observable incremental steps.
+- **No interactive thinking mode for subagents** - hard to monitor progress until they finish.
+- **Subagents don't support stepwise plans** - they execute immediately. Use the main agent for tasks needing observable incremental steps.
 
 ### Agent Teams (the experimental Anthropic feature)
 
-Anthropic shipped Agent Teams as an experimental feature with the Opus 4.6 release (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`). Native multi-agent support with shared task lists, mailbox communication between teammates, and direct teammate-to-teammate messaging — the things community DIY orchestration scripts had been trying to build.
+Anthropic shipped Agent Teams as an experimental feature with the Opus 4.6 release (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`). Native multi-agent support with shared task lists, mailbox communication between teammates, and direct teammate-to-teammate messaging - the things community DIY orchestration scripts had been trying to build.
 
 > "Subagents are contractors you send on separate errands. Agent Teams is a project team sitting in the same room, each working on their piece while staying in sync through conversation."
 
@@ -355,7 +355,7 @@ Source: https://claudefa.st/blog/guide/agents/agent-teams
 
 ---
 
-## 6. Reflection and self-improvement — what works in production
+## 6. Reflection and self-improvement - what works in production
 
 ### Reflection vs Reflexion
 
@@ -378,7 +378,7 @@ Source: https://galileo.ai/blog/self-evaluation-ai-agents-performance-reasoning-
 
 ### Production wisdom
 
-- **Separate evaluator beats single-model self-correction**: "AI agents testing AI agents architectures with separate evaluator models consistently outperform single-model self-correction approaches." This is the same finding as Anthropic's harness post — agents praise their own work.
+- **Separate evaluator beats single-model self-correction**: "AI agents testing AI agents architectures with separate evaluator models consistently outperform single-model self-correction approaches." This is the same finding as Anthropic's harness post - agents praise their own work.
 - **RAG-augmented verification**: 0.76-0.92 AUROC for hallucination detection. Internal consistency checks fail against plausible-but-incorrect content.
 - **Three-layer verification**: internal consistency → RAG-based factual verification → separate evaluator for semantic coherence.
 - **Layered models**: cheaper model for reflection/critique, stronger model for final output (or vice versa depending on failure patterns).
@@ -387,22 +387,22 @@ Source: https://galileo.ai/blog/self-evaluation-ai-agents-performance-reasoning-
 ### Risks of Reflexion memory
 
 - **Memory bloat**
-- **Enshrined mistakes** — bad lessons promoted to permanent memory
+- **Enshrined mistakes** - bad lessons promoted to permanent memory
 - **Drift**
 
 **Mitigations**: versioned memories, decay policies, confidence thresholds, **shadow mode validation** before promoting lessons into production.
 
 ### Reflexion's known failure mode
 
-Reflexion struggles with creative escape from local minima. From the original paper, the agent failed on WebShop tasks requiring creative behavior to escape — gave up after four trials with no improvement. **Implication**: reflection works for incremental refinement, not for tasks requiring a paradigm shift.
+Reflexion struggles with creative escape from local minima. From the original paper, the agent failed on WebShop tasks requiring creative behavior to escape - gave up after four trials with no improvement. **Implication**: reflection works for incremental refinement, not for tasks requiring a paradigm shift.
 
 ### Andrew Ng's four agent design patterns
 
-Reflection is Pattern 1 of Andrew Ng's canonical four (Reflection / Tool Use / Planning / Multi-Agent). Ng treats Reflection as the foundation — the metacognitive layer the other three depend on.
+Reflection is Pattern 1 of Andrew Ng's canonical four (Reflection / Tool Use / Planning / Multi-Agent). Ng treats Reflection as the foundation - the metacognitive layer the other three depend on.
 
 ### OODA + Reflexion complement
 
-OODA (Observe-Orient-Decide-Act) governs real-time decision-making within a single task attempt. Reflexion enables learning across multiple attempts. They're complementary — OODA is intra-task, Reflexion is cross-task.
+OODA (Observe-Orient-Decide-Act) governs real-time decision-making within a single task attempt. Reflexion enables learning across multiple attempts. They're complementary - OODA is intra-task, Reflexion is cross-task.
 
 Source: https://tao-hpu.medium.com/agent-feedback-loops-from-ooda-to-self-reflection-92eb9dd204f6
 
@@ -410,11 +410,11 @@ Source: https://tao-hpu.medium.com/agent-feedback-loops-from-ooda-to-self-reflec
 
 > "In a world where models converge, the compounding asset shifts to the loop and its data. Products that effectively implement self-optimizing AI agents will see quality rise with usage and cost decline per unit of success. That is the definition of a moat in software: learning that accrues to your product faster than it accrues to the market."
 
-For the bleu workspace, this maps to: the wiki itself is the moat. The Curator's `MEMORY.md`, the schema rules, the accumulated proposal/verdict history — all of these compound across sessions and projects in a way that bare prompt engineering can't.
+For the bleu workspace, this maps to: the wiki itself is the moat. The Curator's `MEMORY.md`, the schema rules, the accumulated proposal/verdict history - all of these compound across sessions and projects in a way that bare prompt engineering can't.
 
 ---
 
-## 7. Memory architectures — CoALA and beyond
+## 7. Memory architectures - CoALA and beyond
 
 ### The CoALA taxonomy (Princeton 2023)
 
@@ -429,12 +429,12 @@ Source: https://arxiv.org/abs/2309.02427 (Cognitive Architectures for Language A
 
 ### Production frameworks
 
-- **Letta (formerly MemGPT)** — OS-inspired memory hierarchy. Treats context window as RAM, external storage as disk. Self-edits memory via tool calls. https://docs.letta.com/concepts/memgpt/
-- **LangChain LangMem SDK** — hot path (immediate, latency hit) vs background (delayed, no latency) memory updates.
-- **Zep / Graphiti** — temporal knowledge graphs with sub-200ms retrieval.
-- **Mem0** — self-improving memory with automatic conflict resolution.
-- **A-MEM** (Zettelkasten-inspired) — dynamic indexing and linking. Each new memory generates a structured note with contextual descriptions, keywords, tags. https://arxiv.org/abs/2502.12110
-- **MIRIX** — six memory types: Core, Episodic, Semantic, Procedural, Resource, Knowledge Vault. Multi-agent framework that coordinates updates and retrieval. https://arxiv.org/html/2507.07957v1
+- **Letta (formerly MemGPT)** - OS-inspired memory hierarchy. Treats context window as RAM, external storage as disk. Self-edits memory via tool calls. https://docs.letta.com/concepts/memgpt/
+- **LangChain LangMem SDK** - hot path (immediate, latency hit) vs background (delayed, no latency) memory updates.
+- **Zep / Graphiti** - temporal knowledge graphs with sub-200ms retrieval.
+- **Mem0** - self-improving memory with automatic conflict resolution.
+- **A-MEM** (Zettelkasten-inspired) - dynamic indexing and linking. Each new memory generates a structured note with contextual descriptions, keywords, tags. https://arxiv.org/abs/2502.12110
+- **MIRIX** - six memory types: Core, Episodic, Semantic, Procedural, Resource, Knowledge Vault. Multi-agent framework that coordinates updates and retrieval. https://arxiv.org/html/2507.07957v1
 
 ### Two memory update approaches
 
@@ -482,7 +482,7 @@ A 2025 position paper arguing that the various memory approaches in the literatu
 
 ---
 
-## 8. Context engineering — Anthropic's framework + failure modes
+## 8. Context engineering - Anthropic's framework + failure modes
 
 ### Anthropic's "Effective context engineering for AI agents"
 
@@ -570,7 +570,7 @@ Source: https://oneuptime.com/blog/post/2026-04-01-ai-workload-observability-cos
 
 ### OpenTelemetry semantic conventions for LLM workloads
 
-The 2024 OTel spec introduced semantic conventions for LLM workloads — consistent representation of model-related spans. Adopting OTel for the bleu's telemetry log keeps it interoperable with whatever observability backend the user already has.
+The 2024 OTel spec introduced semantic conventions for LLM workloads - consistent representation of model-related spans. Adopting OTel for the bleu's telemetry log keeps it interoperable with whatever observability backend the user already has.
 
 ---
 
@@ -586,7 +586,7 @@ Plugin subagents do **not** support `hooks`, `mcpServers`, or `permissionMode` f
 
 ### `claude-code-guide` built-in subagent
 
-Claude Code's own system prompt includes a `claude-code-guide` subagent (Haiku, read-only) that's automatically spawned for documentation lookup questions. When users ask "how do I configure X in Claude Code", trust this subagent over your memory — it pulls from current docs.
+Claude Code's own system prompt includes a `claude-code-guide` subagent (Haiku, read-only) that's automatically spawned for documentation lookup questions. When users ask "how do I configure X in Claude Code", trust this subagent over your memory - it pulls from current docs.
 
 ### `/init` generates a starter, but delete most of it
 
@@ -628,7 +628,7 @@ The most significant updates:
 
 ---
 
-# Part II — Frontline 2026 Update
+# Part II - Frontline 2026 Update
 
 A second pass through the landscape, picking up developments and gaps from the first round. Each subsection adds fresh evidence that informed concrete changes in the skill files.
 
@@ -657,19 +657,19 @@ Default to Pattern 1. Escalate only when the simpler pattern demonstrably fails.
 ### Two principles from Anthropic that bite
 
 1. **"Anthropic spent more time on tool interfaces than prompts for SWE-bench."** Good tools beat complex orchestration. Invest in tool design (clear schemas, sensible defaults, useful error messages) before reaching for more agents.
-2. **"Ground truth > LLM opinion."** Use test results, compiler output, linters, type checkers — not LLM self-evaluation — to validate work. The auditor in this skill should consult `.claude/rules/blueprint-schema.md` and the actual filesystem state, not just "vibe-check" the proposals.
+2. **"Ground truth > LLM opinion."** Use test results, compiler output, linters, type checkers - not LLM self-evaluation - to validate work. The auditor in this skill should consult `.claude/rules/blueprint-schema.md` and the actual filesystem state, not just "vibe-check" the proposals.
 
 Source: https://www.anthropic.com/research/building-effective-agents
 
-### The evaluator-optimizer pattern (Pattern 6) — concrete fit for the blueprint workspace
+### The evaluator-optimizer pattern (Pattern 6) - concrete fit for the blueprint workspace
 
 Anthropic's description: "one LLM call generates a response while another provides evaluation and feedback in a loop." Use it when (a) you have clear evaluation criteria, (b) iterative refinement provides measurable value, (c) the LLM can demonstrably improve when a human articulates feedback, (d) the evaluator LLM can provide such feedback.
 
-The Curator + Auditor loop in `advanced-architecture.md` is exactly this pattern. The schema rules in `.claude/rules/blueprint-schema.md` are the "clear evaluation criteria" — without them, the auditor degrades into LLM-vibes.
+The Curator + Auditor loop in `advanced-architecture.md` is exactly this pattern. The schema rules in `.claude/rules/blueprint-schema.md` are the "clear evaluation criteria" - without them, the auditor degrades into LLM-vibes.
 
 ---
 
-## 12. Anthropic's multi-agent research system blog — production lessons
+## 12. Anthropic's multi-agent research system blog - production lessons
 
 https://www.anthropic.com/engineering/multi-agent-research-system
 
@@ -677,17 +677,17 @@ This is Anthropic's most candid post about running multi-agent systems in produc
 
 ### Production lessons that apply directly to the bleu workspace
 
-- **Agents are non-deterministic between runs even with identical prompts.** Debugging is harder than single-agent systems. **Add full production tracing — without it, you can't diagnose why an agent failed.** Apply: the `.telemetry/events.jsonl` file in `advanced-architecture.md` is non-optional for any multi-agent setup.
+- **Agents are non-deterministic between runs even with identical prompts.** Debugging is harder than single-agent systems. **Add full production tracing - without it, you can't diagnose why an agent failed.** Apply: the `.telemetry/events.jsonl` file in `advanced-architecture.md` is non-optional for any multi-agent setup.
 
-- **Monitor decision patterns and interaction structures, not contents.** Privacy-respecting observability is feasible: log which tools fire, how long each phase takes, what handoffs happen — not the contents of every message.
+- **Monitor decision patterns and interaction structures, not contents.** Privacy-respecting observability is feasible: log which tools fire, how long each phase takes, what handoffs happen - not the contents of every message.
 
-- **Best prompts are "frameworks for collaboration" rather than rigid rules.** Anthropic's research agents aren't told "do X then Y then Z" — they're told *how to think about* the problem. The skill's Curator/Linter/Auditor prompts should describe principles and decision heuristics, not step-by-step procedures.
+- **Best prompts are "frameworks for collaboration" rather than rigid rules.** Anthropic's research agents aren't told "do X then Y then Z" - they're told *how to think about* the problem. The skill's Curator/Linter/Auditor prompts should describe principles and decision heuristics, not step-by-step procedures.
 
-- **Encode strategies skilled humans use.** Examples from Anthropic's research agents: decompose difficult questions into smaller tasks, evaluate source quality, adjust search approach based on new information, recognize when to focus on depth vs breadth. **The Researcher agent in `advanced-architecture.md` should have these heuristics in its prompt** — not just "use WebFetch to find sources."
+- **Encode strategies skilled humans use.** Examples from Anthropic's research agents: decompose difficult questions into smaller tasks, evaluate source quality, adjust search approach based on new information, recognize when to focus on depth vs breadth. **The Researcher agent in `advanced-architecture.md` should have these heuristics in its prompt** - not just "use WebFetch to find sources."
 
 - **Set explicit guardrails to prevent spiraling.** The early Claude research agents could go on tangents indefinitely. Maximum-iteration limits and escalation paths to humans are essential.
 
-- **Source quality heuristic — concrete example.** Anthropic's early research agents consistently picked SEO-optimized content farms over authoritative sources like academic PDFs. Adding source quality heuristics to the prompt fixed it. **Apply: the Researcher agent's prompt must include source-ranking guidance**, not just "find sources."
+- **Source quality heuristic - concrete example.** Anthropic's early research agents consistently picked SEO-optimized content farms over authoritative sources like academic PDFs. Adding source quality heuristics to the prompt fixed it. **Apply: the Researcher agent's prompt must include source-ranking guidance**, not just "find sources."
 
 - **Manual testing remains essential.** Multi-agent systems have emergent behaviors. "Small changes to the lead agent can unpredictably change how subagents behave." Don't trust automated evals alone.
 
@@ -701,7 +701,7 @@ For the bleu workspace this means: don't just test the Curator and Auditor in is
 
 ---
 
-## 13. Task decomposition — the granularity numbers everyone should know
+## 13. Task decomposition - the granularity numbers everyone should know
 
 The previous research touched on this but didn't surface the hard numbers.
 
@@ -735,7 +735,7 @@ A working production skill that decomposes PRDs into machine-verifiable tasks. I
 
 - **Each task addresses exactly ONE concern.** Multi-concern tasks must be split.
 - **The golden rule: never combine 'find the problem' with 'fix the problem' in one task.** Diagnosis and remediation are separate tasks.
-- **Each task completable in ONE iteration** — roughly one agent context window.
+- **Each task completable in ONE iteration** - roughly one agent context window.
 - **Every acceptance criterion must be a boolean check** that an AI agent can definitively pass or fail without human interpretation.
 - **All browser-based acceptance criteria must use `agent-browser`** for autonomous UI verification.
 - Examples of bad decomposition:
@@ -747,13 +747,13 @@ Source: https://deepwiki.com/snarktank/compound-product/4.4-task-generation-skil
 
 **Application to bleu**: the action-point template in `references/action-point-template.md` should explicitly enforce these rules. Single concern. Boolean verification. No find+fix combined. One context window per AP.
 
-### Coarse vs fine grained — explicit strategy mention helps
+### Coarse vs fine grained - explicit strategy mention helps
 
 From the arxiv paper "Advancing Agentic Systems" (2410.22457): explicitly mentioning decomposition strategy (coarse vs fine) lets the system adapt based on complexity, with significant accuracy gains. **The Phase 0 intake should include a granularity-strategy decision**: a simple bug fix wants coarse decomposition (3-5 APs); a greenfield system wants fine (~38 APs).
 
 ---
 
-## 14. Hooks at production scale — what frontliners actually do
+## 14. Hooks at production scale - what frontliners actually do
 
 The previous research mentioned hooks but didn't capture the production patterns. These are non-obvious and high-leverage.
 
@@ -761,23 +761,23 @@ The previous research mentioned hooks but didn't capture the production patterns
 
 The current Claude Code hooks reference covers 17 lifecycle points. Total hook count includes the agent-team events (`TaskCreated`, `TaskCompleted`, `TeammateIdle`, etc.) added with Agent Teams.
 
-### Hooks fire for subagent actions too — recursive enforcement
+### Hooks fire for subagent actions too - recursive enforcement
 
 This is critical: if you have a `PreToolUse` hook blocking dangerous Bash commands, that hook also fires when a *subagent* tries to run Bash. **Without recursive hook enforcement, a subagent could bypass your safety gates.** This means hooks compose with subagents naturally.
 
 Source: https://blakecrosley.com/blog/claude-code-hooks-tutorial
 
-### "Don't block at write time — block at commit time"
+### "Don't block at write time - block at commit time"
 
 From the Claude Code best-practices catalogue: 
 
-> "Don't block at write time — let the agent finish its plan, then check the final result."
+> "Don't block at write time - let the agent finish its plan, then check the final result."
 
-The pattern: don't put the linter in `PostToolUse` on `Write|Edit`. Put it in a `PreToolUse` hook on `Bash(git commit)` that checks for a `/tmp/agent-pre-commit-pass` marker file — the marker is written by a separate test-and-fix loop that runs after the agent finishes its plan. Forces convergence at the commit boundary, lets the agent iterate freely in between.
+The pattern: don't put the linter in `PostToolUse` on `Write|Edit`. Put it in a `PreToolUse` hook on `Bash(git commit)` that checks for a `/tmp/agent-pre-commit-pass` marker file - the marker is written by a separate test-and-fix loop that runs after the agent finishes its plan. Forces convergence at the commit boundary, lets the agent iterate freely in between.
 
 Application to the bleu: the curator shouldn't be blocked from writing intermediate states. The lint enforcement happens at the cycle boundary (Stop hook), not on every Edit.
 
-### Sync vs async hooks — the latency tax
+### Sync vs async hooks - the latency tax
 
 From a production multi-agent setup running 95+ hooks (https://dev.to/edwardkubiak/how-i-built-production-quality-gates-into-a-multi-agent-claude-code-workflow-4i55):
 
@@ -788,7 +788,7 @@ From a production multi-agent setup running 95+ hooks (https://dev.to/edwardkubi
 - **`isolation: worktree` for parallel dispatches.** When the orchestrator dispatches code-writer and test-writer in parallel, they can clobber each other's edits without worktree isolation.
 - **301 BATS tests for the hooks themselves.** Shell scripts are easy to break silently. Hook test infrastructure is non-negotiable for any production deployment.
 
-### Hooks vs CLAUDE.md — the durability ladder
+### Hooks vs CLAUDE.md - the durability ladder
 
 From multiple sources:
 
@@ -802,11 +802,11 @@ The thread-based engineering guide maps the standards-to-enforcement ladder clea
 
 ### The auto-format token tax
 
-From multiple practitioner reports: **automatic formatting hooks can consume significant context tokens — one report cited 160k tokens in 3 rounds.** The pattern is: hook formats → file content changes → Claude re-reads → agent reasons over the diff → format hook fires again. Loops.
+From multiple practitioner reports: **automatic formatting hooks can consume significant context tokens - one report cited 160k tokens in 3 rounds.** The pattern is: hook formats → file content changes → Claude re-reads → agent reasons over the diff → format hook fires again. Loops.
 
 **Mitigation**: keep auto-format hooks minimal, or run formatting between sessions instead of every save.
 
-### `prek` — Rust pre-commit replacement
+### `prek` - Rust pre-commit replacement
 
 Worth mentioning for the git-hooks layer: `prek` is a Rust-based pre-commit hook manager that replaces Python's `pre-commit`. Single binary, parallel execution, git worktree support, no Python dependency. Faster than the Python tool by 10x+ in benchmarks.
 
@@ -822,7 +822,7 @@ Source: https://www.pixelmojo.io/blogs/claude-code-hooks-production-quality-ci-c
 
 ---
 
-## 15. Knowledge graphs — when to use, when to skip
+## 15. Knowledge graphs - when to use, when to skip
 
 The previous research mentioned graphs only briefly. Here's the production reality.
 
@@ -830,8 +830,8 @@ The previous research mentioned graphs only briefly. Here's the production reali
 
 Two ends of the spectrum:
 
-- **Graphiti (Neo4j)** — real-time, temporally-aware, hybrid indexing (semantic + keyword + traversal). Built for agentic memory. Sub-200ms retrieval. Incremental updates without full graph recomputation. https://neo4j.com/blog/developer/graphiti-knowledge-graph-memory/
-- **Microsoft GraphRAG** — batch-oriented, precomputed community summaries via Leiden algorithm. Excellent for static large datasets. **$33,000 indexing cost reported on large datasets.** Updates trigger expensive recomputation. Multi-step summarization makes retrieval slow (tens of seconds).
+- **Graphiti (Neo4j)** - real-time, temporally-aware, hybrid indexing (semantic + keyword + traversal). Built for agentic memory. Sub-200ms retrieval. Incremental updates without full graph recomputation. https://neo4j.com/blog/developer/graphiti-knowledge-graph-memory/
+- **Microsoft GraphRAG** - batch-oriented, precomputed community summaries via Leiden algorithm. Excellent for static large datasets. **$33,000 indexing cost reported on large datasets.** Updates trigger expensive recomputation. Multi-step summarization makes retrieval slow (tens of seconds).
 
 For agentic use cases, Graphiti wins. For static enterprise document corpora, Microsoft GraphRAG wins.
 
@@ -845,7 +845,7 @@ Source: https://nstarxinc.com/blog/the-next-frontier-of-rag-how-enterprise-knowl
 
 ### When to add a graph to the bleu workspace
 
-The skill's `advanced-architecture.md` proposes a `.graph/graph.json` overlay. This is correct for blueprints with **substantial cross-references** between APs, components, and decisions — the graph enables queries like "if I change this component, which APs are affected?"
+The skill's `advanced-architecture.md` proposes a `.graph/graph.json` overlay. This is correct for blueprints with **substantial cross-references** between APs, components, and decisions - the graph enables queries like "if I change this component, which APs are affected?"
 
 But: **don't build a graph if you don't need multi-hop reasoning.** A small blueprint with linear dependencies is fine with just `index.md`. The graph pays off when:
 - You have 30+ APs with overlapping dependencies
@@ -853,7 +853,7 @@ But: **don't build a graph if you don't need multi-hop reasoning.** A small blue
 - You want to programmatically detect cycles in the dependency graph
 - You're using the blueprint as input to a multi-agent code-implementation system
 
-### GraphRAG for production engineer agents — concrete example
+### GraphRAG for production engineer agents - concrete example
 
 Decoding AI Magazine's incident-response case study: FastAPI server + Neo4j graph + MCP servers (Confluence, GitHub, Slack, Prometheus). When an alert fires at 02:13, the agent traverses the graph to reconstruct: which services are involved, blast radius, ownership chains, applicable runbooks. Custom explicit agent loop, no framework, "making behavior predictable and debuggable."
 
@@ -867,17 +867,17 @@ Source: https://understandingdata.com/posts/graphrag-for-production-agents/
 
 The canonical layout for markdown-wiki-over-RAG is a **three-directory** architecture:
 
-1. `raw/` — immutable source materials.
-2. `wiki/` — the LLM-compiled, LLM-maintained knowledge base.
-3. `outputs/` — **query responses, synthesized reports, analysis results.**
+1. `raw/` - immutable source materials.
+2. `wiki/` - the LLM-compiled, LLM-maintained knowledge base.
+3. `outputs/` - **query responses, synthesized reports, analysis results.**
 
-**The previous version of this skill missed the third directory.** Every query to the wiki produces an output document in `outputs/` — gives every query a persistent, auditable record. It is the markdown equivalent of "save your work."
+**The previous version of this skill missed the third directory.** Every query to the wiki produces an output document in `outputs/` - gives every query a persistent, auditable record. It is the markdown equivalent of "save your work."
 
-For the bleu workspace, this maps to: `blueprint/outputs/` for everything the human asked the wiki to produce — synthesized reports, "explain this component to me", architecture diagrams generated on demand. The compiler doesn't write here; the user's queries do.
+For the bleu workspace, this maps to: `blueprint/outputs/` for everything the human asked the wiki to produce - synthesized reports, "explain this component to me", architecture diagrams generated on demand. The compiler doesn't write here; the user's queries do.
 
 ### Hard rule on LLM ownership
 
-The sharpest principle in the pattern: **"You rarely ever write or edit the wiki manually — it's the domain of the LLM."** The skill's Curator subagent enforces it for the bleu use case. If the human is hand-editing `blueprint/plan/` files, the workflow has gone wrong — the human's role is sourcing, steering, and asking questions, not doing the bookkeeping.
+The sharpest principle in the pattern: **"You rarely ever write or edit the wiki manually - it's the domain of the LLM."** The skill's Curator subagent enforces it for the bleu use case. If the human is hand-editing `blueprint/plan/` files, the workflow has gone wrong - the human's role is sourcing, steering, and asking questions, not doing the bookkeeping.
 
 ### APQC stat that justifies the pattern
 
@@ -885,9 +885,9 @@ Knowledge workers lose **1.8 hours every day** searching for information (APQC, 
 
 ---
 
-- **Skills are now portable across coding agents.** A SKILL.md written for Claude Code can be loaded by Cursor, Amp, Goose, etc. — same frontmatter format, same activation logic.
+- **Skills are now portable across coding agents.** A SKILL.md written for Claude Code can be loaded by Cursor, Amp, Goose, etc. - same frontmatter format, same activation logic.
 - **Skill versioning is still unsolved.** No built-in version field in the spec. The recommended pattern is directory structure: `.claude/skills/v1/`, `.claude/skills/v2/`. Production deployments should pin to a specific version.
-- **Anthropic released a Skill-Creator testing framework in March 2026.** Quote: "Agent skills are notorious for fooling you into believing they work." The framework lets you systematically test/measure skills against expected behaviors. This is important for any skill that ships to production users — including this one.
+- **Anthropic released a Skill-Creator testing framework in March 2026.** Quote: "Agent skills are notorious for fooling you into believing they work." The framework lets you systematically test/measure skills against expected behaviors. This is important for any skill that ships to production users - including this one.
 
 Source: https://thenewstack.io/agent-skills-anthropics-next-bid-to-define-ai-standards/
 
@@ -895,11 +895,11 @@ Source: https://thenewstack.io/agent-skills-anthropics-next-bid-to-define-ai-sta
 
 - Document the skill version somewhere obvious in SKILL.md so future updates can flag breaking changes.
 - Recommend that users who depend on a specific behavior pin to a known version of the skill in their `.claude/skills/bleu/` directory.
-- The skill's reference files (knowledge-base-pattern, action-point-template, etc.) are the natural unit of versioning — small, focused, testable changes.
+- The skill's reference files (knowledge-base-pattern, action-point-template, etc.) are the natural unit of versioning - small, focused, testable changes.
 
 ---
 
-## 18. The simplicity bias — what every frontline practitioner is shouting
+## 18. The simplicity bias - what every frontline practitioner is shouting
 
 Across all the sources, the loudest single message is: **start simpler than you think you need to.**
 
@@ -929,7 +929,7 @@ The advanced material exists for the cases where it actually pays off, not as a 
 
 ### Balancing the simplicity bias with the safe-delegation-window expansion
 
-The counter-message — also from frontliners — is that **planning before code expands the safe-delegation window from 10-20 minute tasks to multi-hour features**. This is the strongest argument FOR the skill's existence and FOR investing in structure upfront.
+The counter-message - also from frontliners - is that **planning before code expands the safe-delegation window from 10-20 minute tasks to multi-hour features**. This is the strongest argument FOR the skill's existence and FOR investing in structure upfront.
 
 The reconciliation: **upfront structure pays off when the problem is large enough**. For a small bug fix, the structure is overhead. For a greenfield system or multi-month project, the structure is the difference between "I'm in control" and "the agent went on a tangent for an hour."
 
