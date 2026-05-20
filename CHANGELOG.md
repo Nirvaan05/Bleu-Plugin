@@ -15,6 +15,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - README H1 from `Bleu` to `Bleu - a Claude Code plugin for living blueprints`.
 - Top-level description in both manifests now leads with "Claude Code plugin".
 
+### Fixed
+- kb-linter tool whitelist now includes `Write` (it authors files in `.reflection/proposals/`; previously listed read-only tools only).
+- Stale rule-file references updated from `schema/rules.md` to the authoritative `.claude/rules/blueprint-schema.md` (the historical migration note is preserved intentionally).
+- Corrected the raw/ ingestion hook from `PostToolUse` to `FileChanged` in the advanced-architecture ingest pipeline and the SKILL summary, since `PostToolUse` does not fire for MCP servers or external scripts writing to `raw/`.
+
 ## [1.0.0] - 2025-05-04
 
 ### Added
