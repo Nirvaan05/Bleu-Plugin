@@ -19,6 +19,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - kb-linter tool whitelist now includes `Write` (it authors files in `.reflection/proposals/`; previously listed read-only tools only).
 - Stale rule-file references updated from `schema/rules.md` to the authoritative `.claude/rules/blueprint-schema.md` (the historical migration note is preserved intentionally).
 - Corrected the raw/ ingestion hook from `PostToolUse` to `FileChanged` in the advanced-architecture ingest pipeline and the SKILL summary, since `PostToolUse` does not fire for MCP servers or external scripts writing to `raw/`.
+- Auditor agent-hook tool scope: documented consistently as Read/Grep/Glob plus `Write` confined to `.reflection/` (it records verdicts and escalations), resolving a "read-only but writes verdicts" contradiction across `advanced-architecture.md` and `claude-code-integration.md`.
+- Removed the non-existent `kb-auditor` from the `Agent(...)` allowlist in `claude-code-integration.md` (the Auditor is an `agent` hook on `SubagentStop`, not a separate agent file).
+- `SessionStart` resume hook matcher changed from `resume` to `startup|resume` in `session-persistence.md` so blueprint state also loads on a fresh session start (e.g. after `/clear`), matching the rest of the skill.
+- Clarified that the Researcher stages raw captures in `raw/research/` while the Curator promotes synthesized findings to `research/` (episodic vs semantic), reconciling the two documented paths.
 
 ## [1.0.0] - 2025-05-04
 
