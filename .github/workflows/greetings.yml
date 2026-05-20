@@ -1,0 +1,36 @@
+name: Greetings
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            Thanks for opening your first issue on Bleu, and for trying the plugin.
+
+            To help us help you fast:
+            - For a bug, include what you asked Bleu to do, what it produced, and what you expected.
+            - Mention your Claude Code version and the Bleu version from `plugins/bleu/.claude-plugin/plugin.json`.
+
+            See [CONTRIBUTING.md](https://github.com/Nirvaan05/Bleu-plugin/blob/main/CONTRIBUTING.md) for how things work here. A maintainer will take a look soon.
+          pr-message: |
+            Thanks for your first pull request to Bleu.
+
+            A quick checklist before review:
+            - Version bumps go in BOTH `.claude-plugin/marketplace.json` and `plugins/bleu/.claude-plugin/plugin.json`, and they must agree (CI enforces this).
+            - If you changed skill behaviour, update `SKILL.md` and any affected reference file.
+            - Keep the PR scoped to one concern, and add a `CHANGELOG.md` entry under `## [Unreleased]`.
+
+            The validate-plugin check will run automatically. A maintainer will review shortly.

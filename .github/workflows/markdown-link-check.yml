@@ -1,0 +1,35 @@
+name: Markdown link check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.md"
+      - ".github/workflows/markdown-link-check.yml"
+      - ".github/markdown-link-check-config.json"
+  pull_request:
+    paths:
+      - "*.md"
+  schedule:
+    # Weekly, Monday 06:00 UTC, to catch links that rot over time.
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check links in root docs
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: "yes"
+          use-verbose-mode: "yes"
+          config-file: ".github/markdown-link-check-config.json"
+          # Root docs only. The skill content under plugins/** intentionally
+          # references runtime-generated paths (blueprint/...) that do not
+          # exist in the repo, so it is excluded to avoid false positives.
+          file-path: "./README.md, ./CONTRIBUTING.md, ./SECURITY.md, ./CODE_OF_CONDUCT.md, ./PRIVACY.md, ./CHANGELOG.md"
+          check-modified-files-only: "no"

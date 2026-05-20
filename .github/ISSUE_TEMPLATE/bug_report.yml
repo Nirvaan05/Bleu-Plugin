@@ -1,0 +1,49 @@
+name: Bug report
+description: Something in Bleu did not behave as documented
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Bleu is plan-only and writes markdown into a `blueprint/` workspace, so concrete details about what it produced help a lot.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you asked Bleu to do, what it produced, and what you expected instead.
+      placeholder: "I said 'blueprint a URL shortener' and Bleu ... but I expected ..."
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: The exact prompts or trigger phrases, in order.
+      placeholder: |
+        1. /plugin install bleu@bleu
+        2. "help me blueprint X"
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: bleu-version
+    attributes:
+      label: Bleu version
+      description: From plugins/bleu/.claude-plugin/plugin.json
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: claude-code-version
+    attributes:
+      label: Claude Code version
+      placeholder: "e.g. 2.1.x"
+    validations:
+      required: false
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Workspace excerpts, logs, screenshots.
+    validations:
+      required: false

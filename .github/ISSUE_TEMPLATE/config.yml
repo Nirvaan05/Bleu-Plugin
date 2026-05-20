@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/Nirvaan05/Bleu-plugin#readme
+    about: Read the README, the phased workflow, and the reference docs first.
+  - name: Security report
+    url: https://github.com/Nirvaan05/Bleu-plugin/security/advisories/new
+    about: Report a vulnerability privately. Do not open a public issue.

@@ -1,0 +1,6 @@
+# Default reviewers for everything in the repo.
+# Listed maintainers per README: Nirvaan Lagishetty (creator) and Hill Patel.
+* @Nirvaan05 @STiFLeR7
+
+# The skill itself and its references are the heart of the plugin.
+/plugins/bleu/ @Nirvaan05 @STiFLeR7

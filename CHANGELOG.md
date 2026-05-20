@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- GitHub automation under `.github/`: a `validate-plugin` workflow (enforces JSON validity, version/name agreement across both manifests, and plugin structure), a `greetings` workflow for first-time contributors, a scoped markdown link check, issue forms, a PR template, `CODEOWNERS`, and Dependabot for GitHub Actions.
 - `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CHANGELOG.md`.
 - README badges and explicit "Claude Code plugin" positioning.
 - Discoverability metadata: expanded `tags` in `marketplace.json` and `keywords` in `plugin.json` covering `claude-code`, `claude-code-plugin`, `claude-code-skill`, `agent-skills`, `subagents`, `spec-driven-development`.

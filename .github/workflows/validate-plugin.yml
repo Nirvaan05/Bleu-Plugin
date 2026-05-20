@@ -1,0 +1,57 @@
+name: Validate plugin
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - ".claude-plugin/**"
+      - "plugins/**"
+      - ".github/workflows/validate-plugin.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Manifests are valid JSON
+        run: |
+          set -euo pipefail
+          jq empty .claude-plugin/marketplace.json
+          jq empty plugins/bleu/.claude-plugin/plugin.json
+          echo "OK: both manifests parse as JSON"
+
+      - name: Version and name agree across manifests
+        run: |
+          set -euo pipefail
+          mkt_ver=$(jq -r '.plugins[0].version' .claude-plugin/marketplace.json)
+          plg_ver=$(jq -r '.version' plugins/bleu/.claude-plugin/plugin.json)
+          mkt_name=$(jq -r '.plugins[0].name' .claude-plugin/marketplace.json)
+          plg_name=$(jq -r '.name' plugins/bleu/.claude-plugin/plugin.json)
+          echo "marketplace.json: name=$mkt_name version=$mkt_ver"
+          echo "plugin.json:      name=$plg_name version=$plg_ver"
+          fail=0
+          if [ "$mkt_ver" != "$plg_ver" ]; then
+            echo "::error::version mismatch: marketplace.json ($mkt_ver) != plugin.json ($plg_ver). Bump both to the same value."
+            fail=1
+          fi
+          if [ "$mkt_name" != "$plg_name" ]; then
+            echo "::error::plugin name mismatch: marketplace.json ($mkt_name) != plugin.json ($plg_name)."
+            fail=1
+          fi
+          if [ "$fail" -eq 0 ]; then echo "OK: name and version agree"; fi
+          exit $fail
+
+      - name: Plugin source structure is intact
+        run: |
+          set -euo pipefail
+          src=$(jq -r '.plugins[0].source' .claude-plugin/marketplace.json)
+          echo "declared source: $src"
+          test -d "$src" || { echo "::error::source directory $src does not exist"; exit 1; }
+          test -f "$src/.claude-plugin/plugin.json" || { echo "::error::missing $src/.claude-plugin/plugin.json"; exit 1; }
+          test -f "$src/skills/bleu/SKILL.md" || { echo "::error::missing $src/skills/bleu/SKILL.md"; exit 1; }
+          echo "OK: plugin manifest and SKILL.md are present"

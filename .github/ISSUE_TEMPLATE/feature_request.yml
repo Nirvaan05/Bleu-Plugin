@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest an improvement or new capability for Bleu
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve
+      description: The workflow or pain point this would address.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+      description: What Bleu should do. If it touches a phase, a reference file, or the workspace layout, say which.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
