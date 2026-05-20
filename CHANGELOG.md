@@ -23,6 +23,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Removed the non-existent `kb-auditor` from the `Agent(...)` allowlist in `claude-code-integration.md` (the Auditor is an `agent` hook on `SubagentStop`, not a separate agent file).
 - `SessionStart` resume hook matcher changed from `resume` to `startup|resume` in `session-persistence.md` so blueprint state also loads on a fresh session start (e.g. after `/clear`), matching the rest of the skill.
 - Clarified that the Researcher stages raw captures in `raw/research/` while the Curator promotes synthesized findings to `research/` (episodic vs semantic), reconciling the two documented paths.
+- Aligned the dependency-graph path in `action-point-template.md` to `blueprint/action-points/README.md` (matched the file's own prefix convention).
+- Spec Kit constitution handoff now provides a fallback `cp` command from `blueprint/plan/00-vision.md` for the case where `.claude/rules/blueprint-schema.md` is not used (the previous single command would fail).
 
 ## [1.0.0] - 2025-05-04
 
