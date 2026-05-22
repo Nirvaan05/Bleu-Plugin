@@ -10,6 +10,17 @@ Thumbs.db
 .claude/
 .claude.json
 
+# ...but these subdirectories are intentionally tracked dogfooding artifacts,
+# not user state. The negations let `git add .` pick up edits to them.
+# (settings.example.json sits directly under the excluded .claude/, which git
+# cannot re-include via negation, so it is committed with `git add -f` once.)
+!.claude/hooks/
+!.claude/hooks/*
+!.claude/bleu/
+!.claude/bleu/*
+# A real .claude/settings.json is local and stays ignored (it would auto-run
+# hooks on anyone who clones this repo).
+
 # Bleu's own workspace if someone runs it inside this repo
 blueprint/
 

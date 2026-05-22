@@ -13,6 +13,8 @@ This file is read when the user is running the skill inside **Claude Code** and 
 
 If the user asks Claude Code itself "how do I configure X", the canonical built-in answer comes from the **`claude-code-guide`** subagent (Haiku, read-only), which Claude Code spawns automatically for documentation questions. Trust that subagent over memory.
 
+**Two kinds of code appear below.** The inline snippets in this file (named things like `on-blueprint-file-changed.sh`, `load-blueprint-context.sh`) are self-contained teaching examples - copy and adapt them into the user's project. The Bleu repository itself also ships a working reference implementation that dogfoods these patterns: thin shell adapters in `.claude/hooks/` (`on-file-changed.sh`, `on-session-start.sh`, `on-subagent-stop.sh`, `git-autocommit.sh`) that forward to a deterministic Python core in `scripts/bleu/`, wired by `.claude/settings.example.json`. Those adapters read the hook payload from stdin and anchor paths to `$CLAUDE_PROJECT_DIR`, exactly as the snippets here do. They are not active in the repo (no committed `settings.json`) so cloning never runs anything; copy the example settings to enable them locally.
+
 ## Detecting Claude Code
 
 Indicators: a `.claude/` directory exists, a `CLAUDE.md` is present, the user's prompt mentions Claude Code, or environment variables prefixed `CLAUDE_*` are set. Run `/agents` and `/hooks` to verify what's already configured. In any other surface, skip this entire file - the base skill works fine on plain markdown.
