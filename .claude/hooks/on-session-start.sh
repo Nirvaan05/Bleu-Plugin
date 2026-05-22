@@ -8,5 +8,8 @@ set -euo pipefail
 
 cat >/dev/null 2>&1 || true
 
+# Portable interpreter: python3 on most Unix, python on Windows / many distros.
+PY="${PYTHON:-$(command -v python3 || command -v python)}"
+
 cd "${CLAUDE_PROJECT_DIR:-.}"
-python3 scripts/bleu/harness.py --hook session_start
+"$PY" scripts/bleu/harness.py --hook session_start

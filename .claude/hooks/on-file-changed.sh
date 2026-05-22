@@ -11,5 +11,8 @@ FILE_PATH=$(printf '%s' "$INPUT" | jq -r '.file_path // ""')
 
 [ -z "$FILE_PATH" ] && exit 0
 
+# Portable interpreter: python3 on most Unix, python on Windows / many distros.
+PY="${PYTHON:-$(command -v python3 || command -v python)}"
+
 cd "${CLAUDE_PROJECT_DIR:-.}"
-python3 scripts/bleu/harness.py --hook file_changed --file "$FILE_PATH"
+"$PY" scripts/bleu/harness.py --hook file_changed --file "$FILE_PATH"
