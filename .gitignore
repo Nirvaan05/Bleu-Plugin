@@ -13,5 +13,10 @@ Thumbs.db
 # Bleu's own workspace if someone runs it inside this repo
 blueprint/
 
+# Python caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
 # Logs
 *.log
