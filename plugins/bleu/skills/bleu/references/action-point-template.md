@@ -72,7 +72,7 @@ CREATE INDEX tokens_user_id_idx ON tokens(user_id);
 
 - **Consumed by:** `plan/03-components/auth-controller.md` calls `issueToken` on successful login.
 - **Calls into:** `plan/03-components/db-layer.md` for inserts; `plan/03-components/crypto-utils.md` for hashing.
-- **Observed by:** `plan/03-components/audit-logger.md` subscribes to the `token.issued` event (added in AP-NN-1).
+- **Observed by:** `plan/03-components/audit-logger.md` subscribes to the `token.issued` event (added in AP-17).
 
 ## Verification
 

@@ -53,6 +53,8 @@ Example menu:
 
 `.claude/agents/kb-curator.md`. Hooks live **in this file's frontmatter** - that's the modern pattern. Settings file changes are unnecessary.
 
+Note: Bleu writes this file into the **user's project** `.claude/agents/`, not into a distributed plugin. That distinction matters - frontmatter `hooks`, `mcpServers`, and `permissionMode` are honored for project- and user-level subagents but are **not** supported on subagents bundled inside a plugin. Everything below assumes the project-level location.
+
 ```markdown
 ---
 name: kb-curator

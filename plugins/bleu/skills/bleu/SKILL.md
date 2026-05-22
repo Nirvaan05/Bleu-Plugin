@@ -72,7 +72,7 @@ blueprint/
 │   ├── 05-integrations.md     ← external services, APIs, auth, rate limits
 │   ├── 06-non-functional.md   ← perf, security, observability, cost, scaling
 │   └── 07-risks-open-questions.md
-├── action-points/             ← ~38 APs, one file each (AP-01.md … AP-38.md)
+├── action-points/             ← ~38 APs, one file each (AP-01-<slug>.md … AP-38-<slug>.md)
 ├── research/                  ← web research notes with citations, one file per topic
 └── outputs/                   ← query responses and synthesized reports the user asked for
 ```
