@@ -1,6 +1,7 @@
 import argparse
 import sys
 import os
+import re
 import json
 from datetime import datetime
 from utils import load_json, save_json_atomic, read_file, write_file_atomic
@@ -30,8 +31,9 @@ def update_session_blocked(manager, node_path, global_stop=False):
         status_line = "Status: in-progress (PARTIAL ISOLATION)"
         block_msg = f"\n\n## [BLOCKED] {node_path}\n\nThis node has reached the reflection limit (N=2 rejections). It and its downstream dependents are quarantined. See `decisions/pending-resolution.md`."
 
-    # Update Status line
-    content = re.sub(r"Status: .*", status_line, content)
+    # Update only the first (header) Status line, anchored to line start, so
+    # per-node status entries elsewhere in SESSION.md are not clobbered.
+    content = re.sub(r"^Status: .*", status_line, content, count=1, flags=re.MULTILINE)
     
     # Append block message before "Where to read first" or at the end
     if "## Where to read first" in content:
@@ -40,8 +42,6 @@ def update_session_blocked(manager, node_path, global_stop=False):
         content += block_msg
     
     manager.update_session(content)
-
-import re
 
 def main():
     parser = argparse.ArgumentParser(description="Bleu Reflection Circuit Breaker (AP-06)")

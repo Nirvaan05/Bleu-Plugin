@@ -3,7 +3,7 @@
     {
       "id": "S-01",
       "name": "Shell Directive",
-      "regex": "(rm -rf|curl.*\\|.*bash|sudo |ssh |nc -e|/bin/sh|/bin/bash)",
+      "regex": "(?i)(rm -rf|curl.*\\|.*bash|sudo |ssh |nc -e|/bin/sh|/bin/bash)",
       "action": "STRIP",
       "message": "Removed potential executable directive."
     },
@@ -17,7 +17,7 @@
     {
       "id": "S-03",
       "name": "Malicious Script",
-      "regex": "<script.*?>.*?</script>",
+      "regex": "(?is)<script.*?>.*?</script>",
       "action": "STRIP",
       "message": "Removed malicious script tag."
     }
