@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 - `.gitattributes` enforcing LF line endings on shell scripts.
 - `.claude/hooks/git-autocommit.sh` (previously referenced by the docs but missing) and an inert `.claude/settings.example.json` that wires the shipped hook adapters without activating them.
-- Regression tests: `scripts/bleu/test_sanitizer.py` and `scripts/bleu/test_diff_linter.py`, plus a reference-only-orphan case in `test_dag_validator.py`.
+- Regression tests: `scripts/bleu/test_sanitizer.py`, `test_diff_linter.py`, and `test_utils.py` (atomic write + stale-lock reclamation), plus a reference-only-orphan case in `test_dag_validator.py`.
 - GitHub automation under `.github/`: a `validate-plugin` workflow (enforces JSON validity, version/name agreement across both manifests, and plugin structure), a `greetings` workflow for first-time contributors, a scoped markdown link check, issue forms, a PR template, `CODEOWNERS`, and Dependabot for GitHub Actions.
 - `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CHANGELOG.md`.
 - README badges and explicit "Claude Code plugin" positioning.
@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Reflection circuit breaker now rewrites only the header `Status:` line in `SESSION.md` (anchored, `count=1`) instead of clobbering every per-node status entry.
 - `dag_validator.py` no longer mislabels an AP wired in only through a `references` edge as an orphan.
 - `AtomicWriter` flushes and `fsync`s the temp file before `os.replace`, so a crash mid-write cannot expose a truncated file.
+- `FileLocker` reclaims a stale lock left by a crashed writer (older than a configurable threshold) instead of deadlocking every future writer.
 - Hook adapters in `.claude/hooks/` now read the JSON payload from stdin (per the Claude Code contract) instead of argv, anchor paths to `$CLAUDE_PROJECT_DIR`, and run under `set -euo pipefail`.
 - kb-linter tool whitelist now includes `Write` (it authors files in `.reflection/proposals/`; previously listed read-only tools only).
 - Stale rule-file references updated from `schema/rules.md` to the authoritative `.claude/rules/blueprint-schema.md` (the historical migration note is preserved intentionally).

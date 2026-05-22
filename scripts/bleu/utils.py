@@ -47,17 +47,34 @@ class AtomicWriter:
 class FileLocker:
     """
     Simple file-based locking mechanism to prevent concurrent writes.
+
+    A lock left behind by a crashed writer is reclaimed once it is older than
+    `stale_after` seconds, so a crash mid-write cannot deadlock every future
+    writer. `stale_after` defaults to well above `timeout` so a healthy holder
+    is never stolen from.
     """
-    def __init__(self, file_path: str, timeout: int = 5):
+    def __init__(self, file_path: str, timeout: int = 5, stale_after: float = 30.0):
         self.lock_file = f"{file_path}.lock"
         self.timeout = timeout
+        self.stale_after = stale_after
+
+    def _reclaim_if_stale(self):
+        try:
+            age = time.time() - os.path.getmtime(self.lock_file)
+        except FileNotFoundError:
+            return
+        if age > self.stale_after:
+            try:
+                os.remove(self.lock_file)
+            except FileNotFoundError:
+                pass
 
     @contextlib.contextmanager
     def lock(self):
         dir_name = os.path.dirname(self.lock_file)
         if dir_name:
             os.makedirs(dir_name, exist_ok=True)
-            
+
         start_time = time.time()
         while True:
             try:
@@ -66,10 +83,11 @@ class FileLocker:
                 os.close(fd)
                 break
             except FileExistsError:
+                self._reclaim_if_stale()
                 if time.time() - start_time > self.timeout:
                     raise TimeoutError(f"Could not acquire lock for {self.lock_file} after {self.timeout}s")
                 time.sleep(0.1)
-        
+
         try:
             yield
         finally:
