@@ -1,0 +1,5 @@
+# Shell scripts must keep LF endings or the shebang breaks on Unix shells.
+*.sh text eol=lf
+
+# Normalize text files; let Git decide line endings on checkout for the rest.
+* text=auto
