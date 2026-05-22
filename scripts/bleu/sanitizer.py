@@ -5,7 +5,6 @@ import re
 import json
 import unicodedata
 from datetime import datetime
-from markdown_it import MarkdownIt
 from utils import read_file, write_file_atomic
 
 def load_config(config_path):
@@ -14,14 +13,22 @@ def load_config(config_path):
     with open(config_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-class ASTSanitizer:
+class RegexSanitizer:
     """
-    Industrial-grade AST Sanitizer (AP-13).
-    Combines deterministic parsing (markdown-it-py) with regex-based redaction.
+    Deterministic input sanitizer (AP-13).
+
+    Two deterministic stages, applied in order:
+      1. Unicode normalization (NFKC) + stripping of invisible control chars,
+         which neutralizes homoglyph and zero-width-character evasion.
+      2. Configurable regex redaction over the whole normalized text.
+
+    Note: block-scoped redaction over a parsed markdown AST is a planned
+    enhancement (it would let us treat code fences differently from prose),
+    but the shipped implementation is whole-text regex. The class is named
+    for what it does today, not for the AP-13 aspiration.
     """
     def __init__(self, config):
         self.config = config
-        self.md = MarkdownIt()
         self.redactions = 0
         self.messages = []
 
@@ -47,46 +54,15 @@ class ASTSanitizer:
         return text
 
     def sanitize(self, content: str) -> str:
-        # 1. Unicode Normalization
+        # Stage 1: deterministic Unicode normalization + control-char stripping.
         content = self.normalize_text(content)
-        
-        # 2. AST Parsing
-        tokens = self.md.parse(content)
-        
-        # We'll use the tokens to identify 'sensitive' blocks like code fences
-        # Since markdown-it-py is a parser, not necessarily a 'transformer' that outputs MD,
-        # we'll use a safer approach: identify the line ranges of tokens we want to redact
-        # and apply redaction only to those lines, OR apply global redaction if it's an override.
-        
-        # High-security zones: code fences and blocks
-        sanitized_lines = content.splitlines()
-        
-        for token in tokens:
-            if token.type in ("fence", "code_block"):
-                # Redact within the code block
-                start_line, end_line = token.map[0], token.map[1]
-                # token.content contains the body of the code block
-                original_block = token.content
-                sanitized_block = self.apply_regex(original_block)
-                
-                # If changed, we reconstruct that part of the file
-                # This is tricky because token.map only gives us start/end lines
-                # and tokens like 'fence' include the backticks which aren't in token.content.
-                # Simplest approach for AP-13: Redact the WHOLE content but be aggressive on code.
-                pass
-
-        # For AP-13, we must guarantee Stage 1 is deterministic.
-        # We apply regex to the WHOLE content but use the AST to confirm block boundaries if needed.
-        # For 'Instruction Overrides' (S-02), they must be caught anywhere.
-        # For 'Shell Directives' (S-01), they are most dangerous in code.
-        
-        # We apply the configured patterns to the whole text after normalization.
-        sanitized_content = self.apply_regex(content)
-        
-        return sanitized_content
+        # Stage 2: regex redaction over the whole normalized text. Instruction
+        # overrides (S-02) and shell directives (S-01) must be caught anywhere,
+        # so whole-text matching is intentional rather than block-scoped.
+        return self.apply_regex(content)
 
 def main():
-    parser = argparse.ArgumentParser(description="Bleu AST-Based Sanitizer (AP-13)")
+    parser = argparse.ArgumentParser(description="Bleu Deterministic Sanitizer (AP-13)")
     parser.add_argument("file", help="File to sanitize")
     parser.add_argument("--config", default=".claude/bleu/sanitizer-config.json", help="Path to config")
     parser.add_argument("--trust", default="low", choices=["high", "low"], help="Source trust level")
@@ -98,8 +74,8 @@ def main():
 
     config = load_config(args.config)
     original_content = read_file(args.file)
-    
-    sanitizer = ASTSanitizer(config)
+
+    sanitizer = RegexSanitizer(config)
     sanitized_content = sanitizer.sanitize(original_content)
     
     # Prepend Metadata Block (ADR-004)

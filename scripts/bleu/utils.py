@@ -7,9 +7,13 @@ from typing import Any, Dict, Optional
 
 class AtomicWriter:
     """
-    Implements P0 Atomic State Management (ADR-005).
-    Guarantees that files are either fully written or not written at all.
-    Prevents corruption during concurrent hook execution.
+    Atomic state writes (ADR-005).
+
+    The rename via os.replace is atomic on POSIX and Windows: a reader sees
+    either the old file or the fully written new one, never a partial. The temp
+    file is flushed and fsync'd before the rename so a crash mid-write cannot
+    expose a truncated file. (Full crash durability would also fsync the
+    containing directory; that is deferred and noted in ADR-005.)
     """
     
     @staticmethod
@@ -30,7 +34,9 @@ class AtomicWriter:
         try:
             with os.fdopen(fd, mode, encoding=encoding) as f:
                 yield f
-            
+                f.flush()
+                os.fsync(f.fileno())
+
             # Atomic replace (POSIX compliant, Windows-safe via os.replace)
             os.replace(temp_path, file_path)
         except Exception as e:

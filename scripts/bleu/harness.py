@@ -11,8 +11,8 @@ from typing import Dict, Any, List
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from state_manager import StateManager
 from graph_engine import GraphEngine
-from sanitizer import ASTSanitizer, load_config as load_sanitizer_config
-from circuit_breaker import is_foundational, update_session_blocked, is_foundational
+from sanitizer import RegexSanitizer, load_config as load_sanitizer_config
+from circuit_breaker import is_foundational, update_session_blocked
 
 class BleuHarness:
     """
@@ -36,7 +36,13 @@ class BleuHarness:
             f.write(json.dumps(event) + "\n")
 
     def enter_recursion_guard(self, hook_name: str) -> bool:
-        """Prevent recursive hook cascades (Rule 2)."""
+        """Guard against in-process re-entry (Rule 2).
+
+        Note: Claude Code dispatches each hook as a separate process, so this
+        env-var flag only prevents recursion *within a single* harness
+        invocation. Cross-process loop protection is handled at the hook layer
+        (e.g. the git-autocommit stop_hook_active check), not here.
+        """
         guard_var = f"BLEU_HOOK_ACTIVE_{hook_name.upper()}"
         if os.environ.get(guard_var) == "1":
             return False
@@ -59,8 +65,7 @@ class BleuHarness:
             # 1. Sanitize BEFORE indexing (Rule 3)
             if "blueprint/raw/" in rel_path:
                 config = load_sanitizer_config(".claude/bleu/sanitizer-config.json")
-                sanitizer = ASTSanitizer(config)
-                content = self.manager.get_session() # Use manager for atomic read if it were a state file, but for raw we use read_file
+                sanitizer = RegexSanitizer(config)
                 from utils import read_file, write_file_atomic
                 raw_content = read_file(file_path)
                 sanitized = sanitizer.sanitize(raw_content)
@@ -83,33 +88,20 @@ class BleuHarness:
         finally:
             os.environ[f"BLEU_HOOK_ACTIVE_FILE_CHANGED"] = "0"
 
-    def on_subagent_stop(self, agent_name: str, last_output_path: str):
+    def on_subagent_stop(self, agent_name: str):
         """
-        Circuit breaker integration (Rule 7).
-        Matched on 'kb-linter'.
+        Observability hook for the linter subagent (Rule 7).
+
+        This records that the linter finished; it does NOT itself trip the
+        circuit breaker. Verdict recording and rejection-ceiling logic live in
+        circuit_breaker.py, which is invoked separately with the Auditor's
+        explicit verdict (APPROVE / REJECT / ESCALATE) - that is the only place
+        a proposal's rejection count is mutated. Keeping the breaker decision in
+        one deterministic entry point avoids double-counting from this hook.
         """
         if agent_name != "kb-linter":
             return
-            
         self.log_event("HOOK_SUBAGENT_STOP", {"agent": agent_name})
-        
-        try:
-            # Invoke circuit breaker logic
-            # For brevity in harness, we'll assume last_output_path is the proposal
-            # and simulate the call to circuit_breaker.py or its logic
-            from circuit_breaker import load_json, save_json_atomic
-            counters = load_json(self.manager.counters_file)
-            if "proposals" not in counters: counters["proposals"] = {}
-            
-            # Simple hash/ID for the proposal session
-            prop_id = "last_lint_pass" 
-            entry = counters["proposals"].get(prop_id, {"rejection_count": 0})
-            
-            # In a real hook, we'd check if the Auditor (validator) REJECTED the previous pass
-            # This harness wires the deterministic logic.
-            pass
-        except Exception as e:
-            self.log_event("HOOK_FAILURE", {"hook": "subagent_stop", "error": str(e)})
 
     def on_session_start(self):
         """
@@ -143,7 +135,7 @@ def main():
         if args.file:
             harness.on_file_changed(args.file)
     elif args.hook == "subagent_stop":
-        harness.on_subagent_stop(args.agent, "")
+        harness.on_subagent_stop(args.agent)
     elif args.hook == "session_start":
         harness.on_session_start()
 

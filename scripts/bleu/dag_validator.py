@@ -82,12 +82,13 @@ class DAGValidator:
             errors.append(f"Dependency cycle detected: {' -> '.join(cycle_path)}")
 
         # 5. Orphan Detection (Disconnected subgraphs)
-        # In a real project, all APs should eventually lead to a terminal goal
-        # but for now, we just flag nodes with 0 total edges as 'suspicious'
+        # Flag an AP only if it has NO edges of any type (depends_on or
+        # references). A node wired into the graph purely through references is
+        # connected, just not part of the dependency DAG, so it is not an orphan.
         for ap_id in self.ap_ids:
-            has_edge = any(e["from"] == ap_id or e["to"] == ap_id for e in self.edges if e["type"] == "depends_on")
+            has_edge = any(e["from"] == ap_id or e["to"] == ap_id for e in self.edges)
             if not has_edge and len(self.ap_ids) > 1:
-                errors.append(f"Orphan Action Point (no dependencies): {ap_id}")
+                errors.append(f"Orphan Action Point (no dependencies or references): {ap_id}")
 
         return errors, execution_groups
 

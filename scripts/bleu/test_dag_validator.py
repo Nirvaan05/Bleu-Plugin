@@ -94,6 +94,24 @@ class TestDAGValidator(unittest.TestCase):
         self.assertTrue(any("orphan action point" in e.lower() for e in errors))
         self.assertTrue(any("AP-03" in e for e in errors))
 
+    def test_reference_only_node_is_not_orphan(self):
+        """A node wired in only via a 'references' edge is connected, not an orphan."""
+        graph_data = {
+            "nodes": [
+                {"id": "AP-01", "type": "ap", "path": "p1"},
+                {"id": "AP-02", "type": "ap", "path": "p2"},
+                {"id": "AP-03", "type": "ap", "path": "p3"},
+            ],
+            "edges": [
+                {"from": "AP-02", "to": "AP-01", "type": "depends_on"},
+                # AP-03 has no depends_on edge, only a reference to AP-01.
+                {"from": "AP-03", "to": "AP-01", "type": "references"},
+            ],
+        }
+        validator = DAGValidator(graph_data)
+        errors, _ = validator.validate()
+        self.assertFalse(any("AP-03" in e and "orphan" in e.lower() for e in errors))
+
     def test_missing_dependency(self):
         graph_data = {
             "nodes": [

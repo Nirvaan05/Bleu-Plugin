@@ -3,7 +3,7 @@ import sys
 import unittest
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from sanitizer import ASTSanitizer, load_config
+from sanitizer import RegexSanitizer, load_config
 
 CONFIG_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
@@ -16,7 +16,7 @@ class TestSanitizer(unittest.TestCase):
         self.config = load_config(CONFIG_PATH)
 
     def _sanitize(self, text):
-        s = ASTSanitizer(self.config)
+        s = RegexSanitizer(self.config)
         return s.sanitize(text), s
 
     def test_multiline_script_is_redacted(self):
