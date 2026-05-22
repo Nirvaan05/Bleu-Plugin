@@ -382,17 +382,22 @@ Bleu-plugin/
 ├── .claude-plugin/
 │   └── marketplace.json              marketplace catalog
 ├── plugins/
-│   └── bleu/
+│   └── bleu/                         the distributed plugin (this is what installs)
 │       ├── .claude-plugin/
 │       │   └── plugin.json           plugin manifest
 │       └── skills/
 │           └── bleu/
 │               ├── SKILL.md          the skill itself
 │               └── references/       eight reference files
+├── scripts/bleu/                     dogfood: deterministic Python core + tests
+├── .claude/                          dogfood: hook adapters + example settings (not active)
+├── blueprint/                        dogfood: the workspace Bleu built for itself
 ├── README.md
 ├── LICENSE                           MIT
 └── .gitignore
 ```
+
+Only `plugins/bleu/` ships when someone installs Bleu. The `scripts/`, `.claude/`, and `blueprint/` trees are this repo dogfooding the skill (Bleu used to plan and build its own advanced architecture); they are not part of the installed plugin.
 
 ## License
 
