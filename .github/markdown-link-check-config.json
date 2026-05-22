@@ -1,9 +1,0 @@
-{
-  "retryOn429": true,
-  "retryCount": 3,
-  "fallbackRetryDelay": "30s",
-  "aliveStatusCodes": [200, 206, 429],
-  "ignorePatterns": [
-    { "pattern": "^https://github.com/Nirvaan05/Bleu-plugin/security/advisories/new" }
-  ]
-}

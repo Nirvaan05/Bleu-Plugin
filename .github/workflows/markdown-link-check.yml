@@ -4,12 +4,21 @@ on:
   push:
     branches: [main]
     paths:
-      - "*.md"
+      - "README.md"
+      - "CONTRIBUTING.md"
+      - "SECURITY.md"
+      - "CODE_OF_CONDUCT.md"
+      - "PRIVACY.md"
+      - "CHANGELOG.md"
       - ".github/workflows/markdown-link-check.yml"
-      - ".github/markdown-link-check-config.json"
   pull_request:
     paths:
-      - "*.md"
+      - "README.md"
+      - "CONTRIBUTING.md"
+      - "SECURITY.md"
+      - "CODE_OF_CONDUCT.md"
+      - "PRIVACY.md"
+      - "CHANGELOG.md"
   schedule:
     # Weekly, Monday 06:00 UTC, to catch links that rot over time.
     - cron: "0 6 * * 1"
@@ -23,13 +32,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check links in root docs
-        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        uses: lycheeverse/lychee-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          use-quiet-mode: "yes"
-          use-verbose-mode: "yes"
-          config-file: ".github/markdown-link-check-config.json"
-          # Root docs only. The skill content under plugins/** intentionally
-          # references runtime-generated paths (blueprint/...) that do not
-          # exist in the repo, so it is excluded to avoid false positives.
-          file-path: "./README.md, ./CONTRIBUTING.md, ./SECURITY.md, ./CODE_OF_CONDUCT.md, ./PRIVACY.md, ./CHANGELOG.md"
-          check-modified-files-only: "no"
+          # Explicit file list only. The skill content under plugins/** and the
+          # example workspace under blueprint/** reference runtime-generated and
+          # external citation URLs that are out of scope for a public-docs check.
+          args: >-
+            --no-progress
+            --accept 200,206,429
+            --max-retries 3
+            --exclude 'github\.com/Nirvaan05/Bleu-plugin/security/advisories/new'
+            README.md CONTRIBUTING.md SECURITY.md CODE_OF_CONDUCT.md PRIVACY.md CHANGELOG.md
+          fail: true
